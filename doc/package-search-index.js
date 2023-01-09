@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"br.com.efigueredo.blackscreen.userinput.exception"},{"l":"br.com.efigueredo.blackscreen.userinput.verificacao"}];updateSearchResults();
