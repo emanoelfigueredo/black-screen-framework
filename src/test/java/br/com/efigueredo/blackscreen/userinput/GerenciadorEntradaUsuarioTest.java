@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 
 import br.com.efigueredo.blackscreen.userinput.exception.MaisDeUmParametroNaExpressaoException;
 
 @Tag("unitario")
 class GerenciadorEntradaUsuarioUnitarioTest {
-
-	@InjectMocks
-	private GerenciadorEntradaUsuario gerenciador;
 
 	@Mock
 	private RecebedorEntradaUsuario recebedor;
@@ -28,9 +28,15 @@ class GerenciadorEntradaUsuarioUnitarioTest {
 	
 	@Mock
 	private GerenciadorVerificacaoesExpressaoUsuario gerenciadorVerificacoes;
+	
+	@InjectMocks
+	private GerenciadorEntradaUsuario gerenciador;
 
 	@BeforeEach
 	public void setup() throws Exception {
+		String pacoteRaiz = "br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.unica";
+		Reflections reflections = new Reflections(pacoteRaiz, new SubTypesScanner(false), new TypeAnnotationsScanner());
+		this.gerenciador = new GerenciadorEntradaUsuario(reflections, pacoteRaiz);
 		MockitoAnnotations.openMocks(this);
 	}
 
