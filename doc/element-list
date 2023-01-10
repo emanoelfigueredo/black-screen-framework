@@ -1,3 +1,15 @@
+br.com.efigueredo.blackscreen.anotacoes
+br.com.efigueredo.blackscreen.comandos.invocacao
+br.com.efigueredo.blackscreen.comandos.invocacao.exception
+br.com.efigueredo.blackscreen.comandos.metodos
+br.com.efigueredo.blackscreen.comandos.metodos.exception
+br.com.efigueredo.blackscreen.sistema
+br.com.efigueredo.blackscreen.sistema.configuracoes
+br.com.efigueredo.blackscreen.sistema.configuracoes.respostas
+br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception
+br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes
+br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes.detalhes
+br.com.efigueredo.blackscreen.sistema.exception
 br.com.efigueredo.blackscreen.userinput
 br.com.efigueredo.blackscreen.userinput.exception
 br.com.efigueredo.blackscreen.userinput.verificacao
