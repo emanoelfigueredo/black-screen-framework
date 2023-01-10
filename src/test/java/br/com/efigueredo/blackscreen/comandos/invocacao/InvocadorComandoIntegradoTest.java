@@ -15,8 +15,8 @@ import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoContr
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDependenciaInvalida;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDuploConstrutorAnotado;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorSemConstrutorAdequando;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
+import br.com.efigueredo.container.construtor.exception.InversaoDeControleInvalidaException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 
 class InvocadorComandoIntegradoTest {
 	
@@ -24,11 +24,11 @@ class InvocadorComandoIntegradoTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.invocador = new InvocadorComando();
+		this.invocador = new InvocadorComando("br.com.efigueredo.blackscreen.comandos");
 	}
 
 	@Test
-	void deveriaInvocarComandoSemParametrosDeControladorSemDependencias() throws NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException{
+	void deveriaInvocarComandoSemParametrosDeControladorSemDependencias() throws NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException{
 		Class<?> controlador = PrototipoControlador.class;
 		Method comando = controlador.getMethod("comando1");
 		List<String> parametros = Arrays.asList();
@@ -36,7 +36,7 @@ class InvocadorComandoIntegradoTest {
 	}
 	
 	@Test
-	void deveriaInvocarComandoSemParametrosDeControladorComDependencias() throws NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoSemParametrosDeControladorComDependencias() throws NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControladorComDependencia.class;
 		Method comando = controlador.getMethod("comando1");
 		List<String> parametros = Arrays.asList();
@@ -44,7 +44,7 @@ class InvocadorComandoIntegradoTest {
 	}
 	
 	@Test
-	void deveriaInvocarComandoComParametrosDeControladorSemDependencias() throws NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoComParametrosDeControladorSemDependencias() throws NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControlador.class;
 		Method comando = controlador.getMethod("comando2", String.class);
 		List<String> parametros = Arrays.asList("");
@@ -52,7 +52,7 @@ class InvocadorComandoIntegradoTest {
 	}
 	
 	@Test
-	void deveriaInvocarComandoComParametrosDeControladorComDependencias() throws NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoComParametrosDeControladorComDependencias() throws NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControladorComDependencia.class;
 		Method comando = controlador.getMethod("comando2", String.class);
 		List<String> parametros = Arrays.asList("");

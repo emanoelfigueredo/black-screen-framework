@@ -9,15 +9,14 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClasseDeConfiguracaoSemImplementacaoException;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoInterrompidaException;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.MaisDeUmaClasseDeConfiguracaoResposta;
+import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
 import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
 import br.com.efigueredo.blackscreen.userinput.exception.MaisDeUmParametroNaExpressaoException;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 
 @Tag("integrado")
 public class GerenciadorEntradaUsuarioIntegradoTest {
@@ -25,8 +24,10 @@ public class GerenciadorEntradaUsuarioIntegradoTest {
 	private GerenciadorEntradaUsuario gerenciador;
 	
 	@BeforeEach
-	public void setup() throws ConfiguracaoInterrompidaException, MaisDeUmaClasseDeConfiguracaoResposta, ClasseDeConfiguracaoSemImplementacaoException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, PacoteInexistenteException {
-		this.gerenciador = new GerenciadorEntradaUsuario();
+	public void setup() throws ContainerIocException, ConfiguracaoRespostaSistemaException  {
+		String pacoteRaiz = "br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.unica";
+		Reflections reflections = new Reflections(pacoteRaiz, new SubTypesScanner(false), new TypeAnnotationsScanner());
+		this.gerenciador = new GerenciadorEntradaUsuario(reflections, pacoteRaiz);
 	}
 	
 	@Test

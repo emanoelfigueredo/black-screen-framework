@@ -7,7 +7,7 @@ package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception;
  * @author Emanoel
  * @since 1.0.0
  */
-public class ConfiguracaoInterrompidaException extends Exception {
+public class ConfiguracaoInterrompidaException extends ConfiguracaoRespostaSistemaException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,10 +15,10 @@ public class ConfiguracaoInterrompidaException extends Exception {
 	 * Construtor.
 	 *
 	 * @param mensagem Texto que descreva a exceção com mais detalhes.
-	 * @param causa    Causa da interrupção.
+	 * @param excecao  Causa da interrupção.
 	 */
-	public ConfiguracaoInterrompidaException(String mensagem, Throwable causa) {
-		super(mensagem, causa);
+	public ConfiguracaoInterrompidaException(String mensagem, Exception excecao) {
+		super(mensagem, excecao);
 	}
 
 }

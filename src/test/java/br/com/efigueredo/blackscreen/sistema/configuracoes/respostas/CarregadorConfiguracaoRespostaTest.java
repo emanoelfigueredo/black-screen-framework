@@ -3,68 +3,55 @@ package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 
-import br.com.efigueredo.blackscreen.anotacoes.ConfiguracaoSistema;
+import br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.unica.ConfiguracaoResposta1;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClasseDeConfiguracaoSemImplementacaoException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClassesDeConfiguracoesInexistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClassesDeConfiguracoesRespostaInexistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.MaisDeUmaClasseDeConfiguracaoResposta;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo.ConfiguracaoRespostaPrototipo1;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo.ConfiguracaoRespostaPrototipo2;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo.ConfiguracaoRespostaPrototipo3;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo.ConfiguracaoRespostaPrototipo4;
-import br.com.efigueredo.project_loader.projeto.recursos.java.GerenteDeClasses;
 
 class CarregadorConfiguracaoRespostaTest {
 	
-	@InjectMocks
 	private CarregadorConfiguracaoResposta carregador;
-	
-	@Mock
-	private GerenteDeClasses gerenteClasses;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		MockitoAnnotations.openMocks(this);
+	private void setUp(String pacotePrototipo) throws Exception {
+		Reflections reflections = new Reflections(pacotePrototipo, new SubTypesScanner(false), new TypeAnnotationsScanner());
+		this.carregador = new CarregadorConfiguracaoResposta(reflections);
 	}
 
 	@Test
-	void deveriaRetornarAClasseDeConfiguracaoDeRespostas() throws ClassesDeConfiguracoesInexistentesException, ClassesDeConfiguracoesRespostaInexistentesException, MaisDeUmaClasseDeConfiguracaoResposta, ClasseDeConfiguracaoSemImplementacaoException {
-		when(this.gerenteClasses.getClassesPelaAnotacao(ConfiguracaoSistema.class)).thenReturn(Arrays.asList(ConfiguracaoRespostaPrototipo1.class));
+	void deveriaRetornarA_UnicaClasseDeConfiguracaoDeRespostas() throws Exception {
+		this.setUp("br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.unica");
 		assertDoesNotThrow(() -> this.carregador.getClasseConfiguracaoResposta());
-		assertEquals(this.carregador.getClasseConfiguracaoResposta(), ConfiguracaoRespostaPrototipo1.class);
+		assertEquals(this.carregador.getClasseConfiguracaoResposta(), ConfiguracaoResposta1.class);
 	}
 	
 	@Test
-	public void deveriaLancarExcecao_QuandoNaoHouverClasseDeConfiguracao() {
-		when(this.gerenteClasses.getClassesPelaAnotacao(ConfiguracaoSistema.class)).thenReturn(null);
+	public void deveriaLancarExcecao_QuandoNaoHouverClasseDeConfiguracao() throws Exception {
+		this.setUp("br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.vazio");
 		assertThrows(ClassesDeConfiguracoesInexistentesException.class, () -> this.carregador.getClasseConfiguracaoResposta());
 	}
 	
 	@Test
-	public void deveriaLancarExcecao_QuandoNaoHouverClassesDeConfiguracaoRespostas() {
-		when(this.gerenteClasses.getClassesPelaAnotacao(ConfiguracaoSistema.class)).thenReturn(Arrays.asList(ConfiguracaoRespostaPrototipo2.class));
+	public void deveriaLancarExcecao_QuandoNaoHouverClassesDeConfiguracaoRespostas() throws Exception {
+		this.setUp("br.com.efigueredo.blackscreen.prototipo_configuracao_teste");
 		assertThrows(ClassesDeConfiguracoesRespostaInexistentesException.class, () -> this.carregador.getClasseConfiguracaoResposta());
 	}
-	
+
 	@Test
-	public void deveriaLancarExcecao_QuandoHouverMaisDeUmaClasseDeConfiguracaoRespostas() {
-		when(this.gerenteClasses.getClassesPelaAnotacao(ConfiguracaoSistema.class)).thenReturn(Arrays.asList(ConfiguracaoRespostaPrototipo1.class, ConfiguracaoRespostaPrototipo3.class));
+	public void deveriaLancarExcecao_QuandoHouverMaisDeUmaClasseDeConfiguracaoRespostas() throws Exception {
+		this.setUp("br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.duplo");
 		assertThrows(MaisDeUmaClasseDeConfiguracaoResposta.class, () -> this.carregador.getClasseConfiguracaoResposta());
 	}
 	
 	@Test
-	public void deveriaLancarExcecao_CasoAClasseDeConfiguracaoNaoSejaImplementacaoDeConfiguracaoResposta() {
-		when(this.gerenteClasses.getClassesPelaAnotacao(ConfiguracaoSistema.class)).thenReturn(Arrays.asList(ConfiguracaoRespostaPrototipo4.class));
+	public void deveriaLancarExcecao_CasoAClasseDeConfiguracaoNaoSejaImplementacaoDeConfiguracaoResposta() throws Exception {
+		this.setUp("br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.incorreto");
 		assertThrows(ClasseDeConfiguracaoSemImplementacaoException.class, () -> this.carregador.getClasseConfiguracaoResposta());
 	}
 

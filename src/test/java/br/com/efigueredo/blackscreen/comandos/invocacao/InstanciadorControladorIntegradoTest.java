@@ -11,8 +11,9 @@ import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoContr
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDependenciaInvalida;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDuploConstrutorAnotado;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorSemConstrutorAdequando;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
+import br.com.efigueredo.container.construtor.exception.InversaoDeControleInvalidaException;
+import br.com.efigueredo.container.exception.ContainerIocException;
+import br.com.efigueredo.container.objetos.exception.ClasseIlegalParaIntanciaException;
 
 class InstanciadorControladorIntegradoTest {
 	
@@ -20,18 +21,18 @@ class InstanciadorControladorIntegradoTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.instanciador = new InstanciadorControlador();
+		this.instanciador = new InstanciadorControlador("br.com.efigueredo.blackscreen.comandos");
 	}
 
 	@Test
-	void deveriaRetornarUmaInstanciaDaClasseControladoraSemDependencias() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	void deveriaRetornarUmaInstanciaDaClasseControladoraSemDependencias() throws ContainerIocException {
 		Class<?> controlador = PrototipoControlador.class;
 		Object instanciaControlador = this.instanciador.intanciarControlador(controlador);
 		assertTrue(instanciaControlador instanceof PrototipoControlador);
 	}
 	
 	@Test
-	void deveriaRetornarUmaInstanciaDaClasseControladoraComDependencias() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	void deveriaRetornarUmaInstanciaDaClasseControladoraComDependencias() throws ContainerIocException {
 		Class<?> controlador = PrototipoControladorComDependencia.class;
 		PrototipoControladorComDependencia instanciaControlador = (PrototipoControladorComDependencia) this.instanciador.intanciarControlador(controlador);
 		assertTrue(instanciaControlador instanceof PrototipoControladorComDependencia);
@@ -59,7 +60,7 @@ class InstanciadorControladorIntegradoTest {
 	public void deveriaJogarExcecao_SeADependenciaInterfaceNaoEstiverConfigurada() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
 		try {
 			Class<?> controlador = PrototipoControladorDependenciaInvalida.class;
-			assertThrows(RuntimeException.class, () -> this.instanciador.intanciarControlador(controlador));
+			assertThrows(ClasseIlegalParaIntanciaException.class, () -> this.instanciador.intanciarControlador(controlador));
 		} catch (Exception e) {}
 	}
 

@@ -6,7 +6,7 @@ package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception;
  * @author Emanoel
  * @since 1.0.0
  */
-public class ClassesDeConfiguracoesInexistentesException extends Exception {
+public class ClassesDeConfiguracoesInexistentesException extends ConfiguracaoRespostaSistemaException {
 
 	private static final long serialVersionUID = 1L;
 

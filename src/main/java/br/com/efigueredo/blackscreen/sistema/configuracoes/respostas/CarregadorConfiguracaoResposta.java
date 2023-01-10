@@ -2,15 +2,14 @@ package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas;
 
 import java.util.List;
 
+import org.reflections.Reflections;
+
 import br.com.efigueredo.blackscreen.anotacoes.ConfiguracaoSistema;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.ConfiguracaoSistemaTipo;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClasseDeConfiguracaoSemImplementacaoException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClassesDeConfiguracoesInexistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClassesDeConfiguracoesRespostaInexistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.MaisDeUmaClasseDeConfiguracaoResposta;
-import br.com.efigueredo.project_loader.projeto.ProjetoFactory;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
-import br.com.efigueredo.project_loader.projeto.recursos.java.GerenteDeClasses;
 
 /**
  * <h4>Classe responsável pela obtenção da classe de configuração de
@@ -21,21 +20,21 @@ import br.com.efigueredo.project_loader.projeto.recursos.java.GerenteDeClasses;
  */
 public class CarregadorConfiguracaoResposta {
 
-	/** Objeto responsável pelo gerenciamento de todas as classes do projeto. */
-	private GerenteDeClasses gerenteClasses;
-
 	/** Objeto responsável pelas verificações das clases de configuração. */
 	private VerificadorClassesConfiguracaoRespostas verificador;
 
 	/**
-	 * Construto.
-	 *
-	 * @throws PacoteInexistenteException Ocorrerá caso o pacote raiz não exista no
-	 *                                    sistema de arquivos do sistema
-	 *                                    operacional.
+	 * Objeto responsável pela reflexão de todo o projeto.
 	 */
-	public CarregadorConfiguracaoResposta() throws PacoteInexistenteException {
-		this.gerenteClasses = new ProjetoFactory().criarProjeto().getSRC_MAIN_JAVA().getGerenteDeClasses();
+	private Reflections reflections;
+
+	/**
+	 * Construtor.
+	 *
+	 * @param reflections Objeto responsável pela reflexão de todo o projeto.
+	 */
+	public CarregadorConfiguracaoResposta(Reflections reflections) {
+		this.reflections = reflections;
 		this.verificador = new VerificadorClassesConfiguracaoRespostas();
 	}
 
@@ -77,7 +76,7 @@ public class CarregadorConfiguracaoResposta {
 	public Class<?> getClasseConfiguracaoResposta()
 			throws ClassesDeConfiguracoesInexistentesException, ClassesDeConfiguracoesRespostaInexistentesException,
 			MaisDeUmaClasseDeConfiguracaoResposta, ClasseDeConfiguracaoSemImplementacaoException {
-		List<Class<?>> classesAnotadas = this.gerenteClasses.getClassesPelaAnotacao(ConfiguracaoSistema.class);
+		List<Class<?>> classesAnotadas = this.reflections.getTypesAnnotatedWith(ConfiguracaoSistema.class).stream().toList();
 		this.verificador.verificarSeExisteAlgumaClasseDeConfiguracao(classesAnotadas);
 		List<Class<?>> classesDeConfiguracaoMensagem = this.obterClassesDeConfiguracaoRespostas(classesAnotadas);
 		this.verificador.verificarSeExisteAlgumaClasseDeConfiguracaoRespostas(classesDeConfiguracaoMensagem);

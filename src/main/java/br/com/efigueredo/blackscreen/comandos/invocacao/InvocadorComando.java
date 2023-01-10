@@ -4,10 +4,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComandoInterrompidaException;
-import br.com.efigueredo.container.anotacao.Injecao;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
  * <h4>Classe responsável por invocar os métodos de comando.</h4>
@@ -26,12 +23,10 @@ public class InvocadorComando {
 	/**
 	 * Construtor.
 	 *
-	 * @throws PacoteInexistenteException Ocorrerá se o pacote raiz do projeto não
-	 *                                    existir no sistema de arquivos do sistema
-	 *                                    operacional.
+	 * @throws ContainerIocException Erro no container Ioc.
 	 */
-	public InvocadorComando() throws PacoteInexistenteException {
-		this.intanciadorControlador = new InstanciadorControlador();
+	public InvocadorComando(String pacoteRaiz) throws ContainerIocException {
+		this.intanciadorControlador = new InstanciadorControlador(pacoteRaiz);
 		this.invocadorMetodo = new InvocadorMetodo();
 	}
 
@@ -49,33 +44,14 @@ public class InvocadorComando {
 	 *                      ser invocado.
 	 * @param valores       Lista de valores para ser passada como parâmetro na
 	 *                      invocação do método.
-	 * @throws InversaoDeControleInvalidaException   Ocorrerá se houver algum
-	 *                                               problema na inversão de
-	 *                                               controle e injeção de
-	 *                                               dependências no momento da
-	 *                                               instânciação da classe
-	 *                                               controladora inserida. Podendo
-	 *                                               ser:<br>
-	 *                                               <ul>
-	 *                                               <li>Dois construtores anotados
-	 *                                               com {@linkplain Injecao}.</li>
-	 *                                               <li>Inexistência de construtor
-	 *                                               anotado com
-	 *                                               {@linkplain Injecao} e
-	 *                                               construtor padrão</li>
-	 *                                               </ul>
-	 * @throws ClasseIlegalParaIntanciaException     Ocorrerá se alguma depêndencia
-	 *                                               for uma interface e não houve
-	 *                                               classe concetra configurada
-	 *                                               para ser instânciada.
 	 * @throws InvocacaoComandoInterrompidaException Ocorrerá se houver alguma falha
 	 *                                               na invocação do comando. A
 	 *                                               cuasa estára indicada na stack
 	 *                                               trace.
+	 * @throws ContainerIocException                 Erro no container Ioc.
 	 */
 	public void invocarComando(Class<?> controlador, Method metodoComando, List<String> valores)
-			throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException,
-			InvocacaoComandoInterrompidaException {
+			throws InvocacaoComandoInterrompidaException, ContainerIocException {
 		Object objetoControlador = this.intanciadorControlador.intanciarControlador(controlador);
 		this.invocadorMetodo.invocar(objetoControlador, metodoComando, valores);
 	}
