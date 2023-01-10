@@ -17,6 +17,7 @@ import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoContr
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorSemConstrutorAdequando;
 import br.com.efigueredo.container.ContainerIoc;
 import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
 
 class InstanciadorControladorUnitarioTest {
@@ -34,17 +35,17 @@ class InstanciadorControladorUnitarioTest {
 	}
 
 	@Test
-	void deveriaRetornarUmaInstanciaDaClasseControladoraSemDependencias() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	void deveriaRetornarUmaInstanciaDaClasseControladoraSemDependencias() throws ContainerIocException {
 		Class<?> controlador = PrototipoControlador.class;
-		when(this.containerIoc.getIntancia(controlador)).thenReturn(new PrototipoControlador());
+		when(this.containerIoc.getInstancia(controlador)).thenReturn(new PrototipoControlador());
 		Object instanciaControlador = this.instanciador.intanciarControlador(controlador);
 		assertTrue(instanciaControlador instanceof PrototipoControlador);
 	}
 	
 	@Test
-	void deveriaRetornarUmaInstanciaDaClasseControladoraComDependencias() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	void deveriaRetornarUmaInstanciaDaClasseControladoraComDependencias() throws ContainerIocException {
 		Class<?> controlador = PrototipoControladorComDependencia.class;
-		when(this.containerIoc.getIntancia(controlador)).thenReturn(new PrototipoControladorComDependencia(new PrototipoControlador()));
+		when(this.containerIoc.getInstancia(controlador)).thenReturn(new PrototipoControladorComDependencia(new PrototipoControlador()));
 		PrototipoControladorComDependencia instanciaControlador = (PrototipoControladorComDependencia) this.instanciador.intanciarControlador(controlador);
 		assertTrue(instanciaControlador instanceof PrototipoControladorComDependencia);
 		PrototipoControlador controller = instanciaControlador.getController();
@@ -52,23 +53,23 @@ class InstanciadorControladorUnitarioTest {
 	}
 	
 	@Test
-	public void deveriaJogarExcecao_SeHouverMaisDeUmContrutorAnotado_ComArrobaInjecaoNoControlador() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	public void deveriaJogarExcecao_SeHouverMaisDeUmContrutorAnotado_ComArrobaInjecaoNoControlador() throws ContainerIocException {
 		Class<?> controlador = PrototipoControladorDuploConstrutorAnotado.class;
-		when(this.containerIoc.getIntancia(controlador)).thenThrow(InversaoDeControleInvalidaException.class);
+		when(this.containerIoc.getInstancia(controlador)).thenThrow(InversaoDeControleInvalidaException.class);
 		assertThrows(InversaoDeControleInvalidaException.class, () -> this.instanciador.intanciarControlador(controlador));
 	}
 	
 	@Test
-	public void deveriaJogarExcecao_SeNaoHouverConstrutorPadraoENaoHouverConstrutorAnotado_ComArrobaInjecaoNoControlador() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	public void deveriaJogarExcecao_SeNaoHouverConstrutorPadraoENaoHouverConstrutorAnotado_ComArrobaInjecaoNoControlador() throws ContainerIocException {
 		Class<?> controlador = PrototipoControladorSemConstrutorAdequando.class;
-		when(this.containerIoc.getIntancia(controlador)).thenThrow(InversaoDeControleInvalidaException.class);
+		when(this.containerIoc.getInstancia(controlador)).thenThrow(InversaoDeControleInvalidaException.class);
 		assertThrows(InversaoDeControleInvalidaException.class, () -> this.instanciador.intanciarControlador(controlador));
 	}
 	
 	@Test
-	public void deveriaJogarExcecao_SeADependenciaInterfaceNaoEstiverConfigurada() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	public void deveriaJogarExcecao_SeADependenciaInterfaceNaoEstiverConfigurada() throws ContainerIocException {
 		Class<?> controlador = PrototipoControladorDependenciaInvalida.class;
-		when(this.containerIoc.getIntancia(controlador)).thenThrow(ClasseIlegalParaIntanciaException.class);
+		when(this.containerIoc.getInstancia(controlador)).thenThrow(ClasseIlegalParaIntanciaException.class);
 		assertThrows(ClasseIlegalParaIntanciaException.class, () -> this.instanciador.intanciarControlador(controlador));
 	}
 

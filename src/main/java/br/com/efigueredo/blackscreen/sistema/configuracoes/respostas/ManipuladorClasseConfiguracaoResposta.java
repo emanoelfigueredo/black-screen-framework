@@ -4,9 +4,7 @@ import java.lang.reflect.Method;
 
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes.IntefaceConfiguracaoResposta;
 import br.com.efigueredo.container.ContainerIoc;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
  * <h4>Classe responsável por manipular os recursos de uma classe de
@@ -23,12 +21,11 @@ public class ManipuladorClasseConfiguracaoResposta {
 	/**
 	 * Construtor.
 	 *
-	 * @throws PacoteInexistenteException Ocorrerá caso o pacote raiz do projeto não
-	 *                                    exista no sistema de arquivos do sistema
-	 *                                    operacional.
+	 * @param pacoteRaiz O pacote raiz do projeto.
+	 * @throws ContainerIocException Erro no container ioc, analise a stack trace.
 	 */
-	public ManipuladorClasseConfiguracaoResposta() throws PacoteInexistenteException {
-		this.container = new ContainerIoc();
+	public ManipuladorClasseConfiguracaoResposta(String pacoteRaiz) throws ContainerIocException {
+		this.container = new ContainerIoc(pacoteRaiz);
 	}
 
 	/**
@@ -36,15 +33,10 @@ public class ManipuladorClasseConfiguracaoResposta {
 	 *
 	 * @param classeConfiguracao Classe de configuração.
 	 * @return Intância da classe de configuração inserida.
-	 * @throws InversaoDeControleInvalidaException Lançado quando há alguma situação
-	 *                                             em que não seja possível realizar
-	 *                                             a intanciação do objeto.
-	 * @throws ClasseIlegalParaIntanciaException   Lançado quando é requerido uma
-	 *                                             intância de interface.
+	 * @throws ContainerIocException Erro no container ioc, analise a stack trace.
 	 */
-	public Object getIntanciaClasseConfiguracao(Class<?> classeConfiguracao)
-			throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
-		return this.container.getIntancia(classeConfiguracao);
+	public Object getIntanciaClasseConfiguracao(Class<?> classeConfiguracao) throws ContainerIocException {
+		return this.container.getInstancia(classeConfiguracao);
 	}
 
 	/**

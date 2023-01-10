@@ -1,10 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>br.com.efigueredo</groupId>
-	<artifactId>black-screen</artifactId>
+	<groupId>com.github.emanoelfigueredo</groupId>
+	<artifactId>black-screen-framework</artifactId>
 	<version>1.0.0</version>
 	<name>BlackScreen</name>
 	<description>Framework BlackScreen facilita o desenvolvimento de aplicações na linha de comando.</description>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Emanoel Figueredo Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/emanoelfigueredo/brack-screen-framework</url>
+		</repository>
+	</distributionManagement>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<developers>
+		<developer>
+			<id>efigueredo</id>
+			<name>Emanoel Figueredo</name>
+			<email>emanoel.figueredo.1@gmail.com</email>
+			<organization>com.github.emanoelfigueredo</organization>
+			<organizationUrl>https://github.com/emanoelfigueredo</organizationUrl>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
 		<dependency>
@@ -34,28 +59,33 @@
 			<version>1.9.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- LOADER -->
 		<dependency>
-			<groupId>com.github.emanoelfigueredo</groupId>
-			<artifactId>project-loader</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
 		</dependency>
 		<dependency>
-			<groupId>br.com.efigueredo</groupId>
+			<groupId>com.github.emanoelfigueredo</groupId>
 			<artifactId>container-ioc</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>Black Screen</finalName>
+		<finalName>BlackScreen Framework</finalName>
 		<plugins>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
 			</plugin>
 		</plugins>
 	</build>

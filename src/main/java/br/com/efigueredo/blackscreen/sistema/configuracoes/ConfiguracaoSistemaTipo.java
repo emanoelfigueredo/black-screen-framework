@@ -7,6 +7,7 @@ public enum ConfiguracaoSistemaTipo {
 
 	/** Configuração para respostas do sistema. */
 	RESPOSTAS,
+	
 	/** Configuração para testes do sistema. */
 	TESTE;
 

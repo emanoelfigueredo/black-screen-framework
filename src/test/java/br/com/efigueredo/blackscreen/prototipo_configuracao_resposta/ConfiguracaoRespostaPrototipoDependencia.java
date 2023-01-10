@@ -1,6 +1,4 @@
-package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo;
-
-import java.util.List;
+package br.com.efigueredo.blackscreen.prototipo_configuracao_resposta;
 
 import br.com.efigueredo.blackscreen.anotacoes.ConfiguracaoSistema;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.ConfiguracaoSistemaTipo;
@@ -9,17 +7,22 @@ import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes.Inte
 import br.com.efigueredo.container.anotacao.Injecao;
 
 @ConfiguracaoSistema(tipo = ConfiguracaoSistemaTipo.RESPOSTAS)
-public class ConfiguracaoRespostaPrototipoDependenciaNaoConfigurada implements ConfiguracaoResposta {
+public class ConfiguracaoRespostaPrototipoDependencia implements ConfiguracaoResposta {
 	
+	private String string;
+
 	@Injecao
-	public ConfiguracaoRespostaPrototipoDependenciaNaoConfigurada(List<?> arg1) {
-		
+	public ConfiguracaoRespostaPrototipoDependencia(String string) {
+		this.string = string;
 	}
 
 	@Override
 	public void configurarRespostas(IntefaceConfiguracaoResposta interfaceConfiguracao) {
-		// TODO Auto-generated method stub
 		
 	}
-
+	
+	public String getString() {
+		return string;
+	}
+	
 }

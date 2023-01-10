@@ -20,6 +20,7 @@ import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoContr
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDuploConstrutorAnotado;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorSemConstrutorAdequando;
 import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
 
 class InvocadorComandoUnitarioTest {
@@ -39,7 +40,7 @@ class InvocadorComandoUnitarioTest {
 	}
 
 	@Test
-	void deveriaInvocarComandoSemParametrosDeControladorSemDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoSemParametrosDeControladorSemDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControlador.class;
 		Object objetoControlador = controlador.getDeclaredConstructor().newInstance();
 		Method comando = controlador.getMethod("comando1");
@@ -50,7 +51,7 @@ class InvocadorComandoUnitarioTest {
 	}
 	
 	@Test
-	void deveriaInvocarComandoSemParametrosDeControladorComDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoSemParametrosDeControladorComDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControladorComDependencia.class;
 		Object objetoControlador = controlador.getDeclaredConstructor(PrototipoControlador.class).newInstance(new PrototipoControlador());
 		Method comando = controlador.getMethod("comando1");
@@ -61,7 +62,7 @@ class InvocadorComandoUnitarioTest {
 	}
 	
 	@Test
-	void deveriaInvocarComandoComParametrosDeControladorSemDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoComParametrosDeControladorSemDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControlador.class;
 		Object objetoControlador = controlador.getDeclaredConstructor().newInstance();
 		Method comando = controlador.getMethod("comando2", String.class);
@@ -72,7 +73,7 @@ class InvocadorComandoUnitarioTest {
 	}
 	
 	@Test
-	void deveriaInvocarComandoComParametrosDeControladorComDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, InvocacaoComandoInterrompidaException  {
+	void deveriaInvocarComandoComParametrosDeControladorComDependencias() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InvocacaoComandoInterrompidaException, ContainerIocException  {
 		Class<?> controlador = PrototipoControladorComDependencia.class;
 		Object objetoControlador = controlador.getDeclaredConstructor(PrototipoControlador.class).newInstance(new PrototipoControlador());
 		Method comando = controlador.getMethod("comando2", String.class);
@@ -83,7 +84,7 @@ class InvocadorComandoUnitarioTest {
 	}
 	
 	@Test
-	public void deveriaJogarExcecao_SeHouverMaisDeUmContrutorAnotado_ComArrobaInjecaoNoControlador() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException  {
+	public void deveriaJogarExcecao_SeHouverMaisDeUmContrutorAnotado_ComArrobaInjecaoNoControlador() throws ContainerIocException  {
 		Class<?> controlador = PrototipoControladorDuploConstrutorAnotado.class;
 		Method comando = null;
 		List<String> parametros = Arrays.asList("");
@@ -93,7 +94,7 @@ class InvocadorComandoUnitarioTest {
 	}
 	
 	@Test
-	public void deveriaJogarExcecao_SeNaoHouverConstrutorPadraoENaoHouverConstrutorAnotado_ComArrobaInjecaoNoControlador() throws InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException  {
+	public void deveriaJogarExcecao_SeNaoHouverConstrutorPadraoENaoHouverConstrutorAnotado_ComArrobaInjecaoNoControlador() throws ContainerIocException  {
 		Class<?> controlador = PrototipoControladorSemConstrutorAdequando.class;
 		Method comando = null;
 		List<String> parametros = Arrays.asList("");
@@ -110,7 +111,7 @@ class InvocadorComandoUnitarioTest {
 			List<String> parametros = Arrays.asList("");
 			
 			when(this.intanciador.intanciarControlador(controlador)).thenThrow(InversaoDeControleInvalidaException.class);
-			assertThrows(RuntimeException.class, () -> this.invocador.invocarComando(controlador, comando, parametros));
+			assertThrows(ClasseIlegalParaIntanciaException.class, () -> this.invocador.invocarComando(controlador, comando, parametros));
 		} catch (Exception e) {}
 	}
 

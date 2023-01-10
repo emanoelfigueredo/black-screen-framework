@@ -21,6 +21,7 @@ import br.com.efigueredo.blackscreen.userinput.GerenciadorEntradaUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
 import br.com.efigueredo.container.ContainerIoc;
 import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
 import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
 
@@ -31,7 +32,7 @@ import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteExcep
  * @author Emanoel
  * @since 1.0.0
  */
-public class Sistema {
+public class AplicacaoBackScreen {
 
 	/**
 	 * Objeto {@linkplain Class} estático que representa a classe controladora
@@ -87,20 +88,15 @@ public class Sistema {
 	 * @throws ClasseDeConfiguracaoSemImplementacaoException the classe de
 	 *                                                       configuracao sem
 	 *                                                       implementacao
-	 * @throws InversaoDeControleInvalidaException           the inversao de
-	 *                                                       controle invalida
-	 *                                                       exception
-	 * @throws ClasseIlegalParaIntanciaException             the classe ilegal para
-	 *                                                       intancia exception
+	 * @throws ContainerIocException 
 	 */
-	public Sistema(Class<?> controladorInicial)
-			throws PacoteInexistenteException, ControladorAtualInexistenteException, ConfiguracaoInterrompidaException,
-			MaisDeUmaClasseDeConfiguracaoResposta, InversaoDeControleInvalidaException,
-			ClasseIlegalParaIntanciaException, ClasseDeConfiguracaoSemImplementacaoException {
+	public AplicacaoBackScreen(Class<?> controladorInicial)
+			throws ControladorAtualInexistenteException, ConfiguracaoInterrompidaException,
+			MaisDeUmaClasseDeConfiguracaoResposta, ClasseDeConfiguracaoSemImplementacaoException, ContainerIocException {
 		if (controladorInicial == null) {
 			throw new ControladorAtualInexistenteException("Não existe classe controladora setada no sistema.");
 		}
-		Sistema.controladorAtual = controladorInicial;
+		AplicacaoBackScreen.controladorAtual = controladorInicial;
 		this.gerenteEntrada = new GerenciadorEntradaUsuario();
 		this.gerenteMetodos = new GerenciadorComandoControlador();
 		this.invocadorComandos = new InvocadorComando();
@@ -115,8 +111,9 @@ public class Sistema {
 	 * correspondente ao comando desejado, com seus parâmetros de comando e seus
 	 * valores. Se não valer nulo, então o método encontrado será invocado. Assim
 	 * executando o comando desejado.
+	 * @throws ContainerIocException 
 	 */
-	public void executar() {
+	public void executar() throws ContainerIocException {
 		this.respostasSistema.imprimirBanner();
 		while (true) {
 			EntradaUsuario entradaUsuario = this.receberEntrada();
@@ -186,14 +183,15 @@ public class Sistema {
 	 *                       as partes da entrada expressão inserida.
 	 * @param metodoComando  Objeto {@linkplain Method} que represente o método de
 	 *                       comando.
+	 * @throws ContainerIocException 
 	 */
-	private void invocarMetodoComando(EntradaUsuario entradaUsuario, Method metodoComando) {
+	private void invocarMetodoComando(EntradaUsuario entradaUsuario, Method metodoComando) throws ContainerIocException {
 		try {
 			this.invocadorComandos.invocarComando(controladorAtual, metodoComando, entradaUsuario.getValores());
 		} catch (InversaoDeControleInvalidaException e) {
 			this.respostasSistema.imprimirMensagemErro(
 					"Não foi possível realizar a inversão de controle e injeção de dependências da classe controladora "
-							+ Sistema.controladorAtual.getName());
+							+ AplicacaoBackScreen.controladorAtual.getName());
 		} catch (ClasseIlegalParaIntanciaException e) {
 			this.respostasSistema.imprimirMensagemErro(
 					"A classe controladora atual possui dependências que não podem ser intânciadas");
@@ -208,7 +206,7 @@ public class Sistema {
 	 * @return Objeto {@linkplain Class} da classe controladora atual.
 	 */
 	public static Class<?> getControladorAtual() {
-		return Sistema.controladorAtual;
+		return AplicacaoBackScreen.controladorAtual;
 	}
 
 	/**
@@ -218,7 +216,7 @@ public class Sistema {
 	 * @return {@linkplain ContainerIoc}
 	 */
 	public static ContainerIoc getContainerIoc() {
-		return Sistema.containerIoc;
+		return AplicacaoBackScreen.containerIoc;
 	}
 
 	/**
@@ -228,7 +226,7 @@ public class Sistema {
 	 *               controladora atual do sistema.
 	 */
 	public static void setControladorAtual(Class<?> classe) {
-		Sistema.controladorAtual = classe;
+		AplicacaoBackScreen.controladorAtual = classe;
 	}
 
 }

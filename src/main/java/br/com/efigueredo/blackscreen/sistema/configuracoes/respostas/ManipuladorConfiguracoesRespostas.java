@@ -3,16 +3,15 @@ package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.reflections.Reflections;
+
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.RespostasSistema.RespostasSistemaBuilder;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClasseDeConfiguracaoSemImplementacaoException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClassesDeConfiguracoesInexistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClassesDeConfiguracoesRespostaInexistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoInterrompidaException;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.MaisDeUmaClasseDeConfiguracaoResposta;
+import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes.IntefaceConfiguracaoResposta;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
  * <h4>Classe responsável por manipular os recursos da classe de configuração de
@@ -38,13 +37,13 @@ public class ManipuladorConfiguracoesRespostas {
 	/**
 	 * Construtor.
 	 *
-	 * @throws PacoteInexistenteException Ocorrerá caso o pacote raiz do projeto não
-	 *                                    exista no sistema de arquivos do sistema
-	 *                                    operacional.
+	 * @param reflection the reflection
+	 * @param pacoteRaiz the pacote raiz
+	 * @throws ContainerIocException the container ioc exception
 	 */
-	public ManipuladorConfiguracoesRespostas() throws PacoteInexistenteException {
-		this.carregador = new CarregadorConfiguracaoResposta();
-		this.manipuladorClasse = new ManipuladorClasseConfiguracaoResposta();
+	public ManipuladorConfiguracoesRespostas(Reflections reflection, String pacoteRaiz) throws ContainerIocException {
+		this.carregador = new CarregadorConfiguracaoResposta(reflection);
+		this.manipuladorClasse = new ManipuladorClasseConfiguracaoResposta(pacoteRaiz);
 	}
 
 	/**
@@ -59,34 +58,12 @@ public class ManipuladorConfiguracoesRespostas {
 	 * respostas, uma exceção será capturada e o retorno será null.
 	 *
 	 * @return Builder configurado.
-	 * @throws ConfiguracaoInterrompidaException             Ocorrerá caso a leitura
-	 *                                                       das configurações para
-	 *                                                       o builder seja
-	 *                                                       interrompida.
-	 * @throws MaisDeUmaClasseDeConfiguracaoResposta         Ocorrerá caso exista
-	 *                                                       mais de uma classe de
-	 *                                                       configuração de
-	 *                                                       respostas no projeto.
-	 * @throws ClasseDeConfiguracaoSemImplementacaoException Ocorrerá caso a classe
-	 *                                                       de configuração de
-	 *                                                       respostas encontrada
-	 *                                                       não seja uma
-	 *                                                       implementação da
-	 *                                                       interface
-	 *                                                       {@linkplain ConfiguracaoResposta}.
-	 * @throws InversaoDeControleInvalidaException           Lançado quando há
-	 *                                                       alguma situação em que
-	 *                                                       não seja possível
-	 *                                                       realizar a intanciação
-	 *                                                       do objeto.
-	 * @throws ClasseIlegalParaIntanciaException             Lançado quando é
-	 *                                                       requerido uma intância
-	 *                                                       de interface.
-	 * 
+	 * @throws ConfiguracaoRespostaSistemaException Falha no carregamento das
+	 *                                              configurações de respostas do
+	 *                                              sistema. Analise a cuasa.
+	 * @throws ContainerIocException                Erro no Container Ioc.
 	 */
-	public RespostasSistemaBuilder getBuilder() throws ConfiguracaoInterrompidaException,
-			MaisDeUmaClasseDeConfiguracaoResposta, ClasseDeConfiguracaoSemImplementacaoException,
-			InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException {
+	public RespostasSistemaBuilder getBuilder() throws ConfiguracaoRespostaSistemaException, ContainerIocException {
 		try {
 			Class<?> classeConfiguracao = this.carregador.getClasseConfiguracaoResposta();
 			Method metodoConfiguracao = this.manipuladorClasse.getMetodoConfiguracao(classeConfiguracao);
@@ -99,7 +76,7 @@ public class ManipuladorConfiguracoesRespostas {
 				| InvocationTargetException e) {
 			throw new ConfiguracaoInterrompidaException(
 					"O processo de configuracao da classe de configuracao de respostas foi interrompido. Analise a causa e corriga o problema",
-					e.getCause());
+					e);
 		}
 
 	}

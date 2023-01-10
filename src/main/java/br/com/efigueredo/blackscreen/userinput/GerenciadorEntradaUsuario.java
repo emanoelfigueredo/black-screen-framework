@@ -2,14 +2,11 @@ package br.com.efigueredo.blackscreen.userinput;
 
 import java.util.List;
 
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.ConfiguracaoResposta;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ClasseDeConfiguracaoSemImplementacaoException;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoInterrompidaException;
-import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.MaisDeUmaClasseDeConfiguracaoResposta;
+import org.reflections.Reflections;
+
+import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
 import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
+import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
  * <h4>A classe {@code GerenciadorEntradaUsuario} é responsável por gerenciar os
@@ -35,38 +32,16 @@ public class GerenciadorEntradaUsuario {
 
 	/**
 	 * Construtor da classe.
-	 * 
-	 * @throws PacoteInexistenteException                    Ocorrerá caso o pacote
-	 *                                                       raiz do projeto não
-	 *                                                       seja encontrada no
-	 *                                                       sistema de arquivos do
-	 *                                                       sistema operacional.
-	 * @throws ClasseIlegalParaIntanciaException             Ocorrerá caso alguma
-	 *                                                       das depêndencias seja
-	 *                                                       interface e não esteja
-	 *                                                       configurada.
-	 * @throws InversaoDeControleInvalidaException           Ocorrerá alguma classe
-	 *                                                       que utilize a injeção
-	 *                                                       de depêndencia não siga
-	 *                                                       os meios determinados
-	 *                                                       para o procedimento.
-	 * @throws ClasseDeConfiguracaoSemImplementacaoException Ocorrerá caso a classe
-	 *                                                       de configuração de
-	 *                                                       resposta do sistema não
-	 *                                                       implemente a classe
-	 *                                                       {@linkplain ConfiguracaoResposta}.
-	 * @throws MaisDeUmaClasseDeConfiguracaoResposta         Ocorrerá caso exista
-	 *                                                       mais de uma classe de
-	 *                                                       configuração de
-	 *                                                       respostas no projeto.
-	 * @throws ConfiguracaoInterrompidaException             Ocorrerá se a leitura
-	 *                                                       da configuração for
-	 *                                                       interrompida.
+	 *
+	 * @param reflections Objeto responsável pela reflexão do projeto.
+	 * @param pacoteRaiz Pacote raiz do projeto.
+	 * @throws ContainerIocException                Erro no Container Ioc.
+	 * @throws ConfiguracaoRespostaSistemaException Falha no carregamento das
+	 *                                              configurações de respostas do
+	 *                                              sistema. Analise a cuasa.
 	 */
-	public GerenciadorEntradaUsuario() throws ConfiguracaoInterrompidaException, MaisDeUmaClasseDeConfiguracaoResposta,
-			InversaoDeControleInvalidaException, ClasseIlegalParaIntanciaException, PacoteInexistenteException,
-			ClasseDeConfiguracaoSemImplementacaoException {
-		this.recebedor = new RecebedorEntradaUsuario();
+	public GerenciadorEntradaUsuario(Reflections reflections, String pacoteRaiz) throws ContainerIocException, ConfiguracaoRespostaSistemaException {
+		this.recebedor = new RecebedorEntradaUsuario(reflections, pacoteRaiz);
 		this.manipulador = new ManipuladorEntradaUsuario();
 		this.gerenciadorVerificacoes = new GerenciadorVerificacaoesExpressaoUsuario();
 	}

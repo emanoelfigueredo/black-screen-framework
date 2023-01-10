@@ -47,7 +47,7 @@ public class VerificadorClassesConfiguracaoRespostas {
 	 */
 	public void verificarSeExisteAlgumaClasseDeConfiguracao(List<Class<?>> classesAnotadas)
 			throws ClassesDeConfiguracoesInexistentesException {
-		if (classesAnotadas == null) {
+		if (classesAnotadas.isEmpty()) {
 			throw new ClassesDeConfiguracoesInexistentesException();
 		}
 	}

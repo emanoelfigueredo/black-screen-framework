@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControlador;
 import br.com.efigueredo.blackscreen.sistema.exception.ControladorAtualInexistenteException;
 
-class SistemaTest {
+public class AplicacaoBackScreenTest {
 
 	@Test
 	void deveriaLancarExcecao_QuandoAClasseControladoraInicialValeNull() {
-		assertThrows(ControladorAtualInexistenteException.class, () -> new Sistema(null));
+		assertThrows(ControladorAtualInexistenteException.class, () -> new AplicacaoBackScreen(null));
 	}
 	
 	@Test
 	void naoDeveriaLancarExcecao_QuandoAClasseControladoraInicialNaoValerNull() {
-		assertDoesNotThrow(() -> new Sistema(PrototipoControlador.class));
+		assertDoesNotThrow(() -> new AplicacaoBackScreen(PrototipoControlador.class));
 	}
 
 }

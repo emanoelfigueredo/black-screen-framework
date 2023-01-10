@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo;
+package br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.duplo;
 
 import br.com.efigueredo.blackscreen.anotacoes.ConfiguracaoSistema;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.ConfiguracaoSistemaTipo;

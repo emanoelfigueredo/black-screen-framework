@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.prototipo;
+package br.com.efigueredo.blackscreen.prototipo_configuracao_resposta.correta.duplo;
 
 import br.com.efigueredo.blackscreen.anotacoes.ConfiguracaoSistema;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.ConfiguracaoSistemaTipo;
@@ -8,7 +8,7 @@ import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes.deta
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.fontes.detalhes.CoresFontes;
 
 @ConfiguracaoSistema(tipo = ConfiguracaoSistemaTipo.RESPOSTAS)
-public class ConfiguracaoRespostaPrototipo1  implements ConfiguracaoResposta {
+public class ConfiguracaoResposta1  implements ConfiguracaoResposta {
 
 	@Override
 	public void configurarRespostas(IntefaceConfiguracaoResposta ic) {
