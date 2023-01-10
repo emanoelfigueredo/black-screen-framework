@@ -2,7 +2,6 @@ package br.com.efigueredo.blackscreen.comandos.invocacao;
 
 import br.com.efigueredo.container.ContainerIoc;
 import br.com.efigueredo.container.exception.ContainerIocException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
 
 /**
  * <h4>Classe responsável por instânciar o controlador requisitado, com todas as
@@ -19,13 +18,10 @@ public class InstanciadorControlador {
 	/**
 	 * Construtor.
 	 *
-	 * @throws PacoteInexistenteException Ocorrerá se o pacote raiz do projeto não
-	 *                                    existir no sistema de arquivos do sistema
-	 *                                    operacional.
-	 * @throws ContainerIocException 
+	 * @throws ContainerIocException Erro no container Ioc.
 	 */
-	public InstanciadorControlador() throws PacoteInexistenteException, ContainerIocException {
-		this.containerIoc = new ContainerIoc();
+	public InstanciadorControlador(String pacoteRaiz) throws ContainerIocException {
+		this.containerIoc = new ContainerIoc(pacoteRaiz);
 	}
 
 	/**
@@ -34,10 +30,9 @@ public class InstanciadorControlador {
 	 * @param controlador Objeto {@linkplain Class} que represente a classe do
 	 *                    controlador que deve ser instânciada.
 	 * @return Uma intância do controlador.
-	 * @throws ContainerIocException 
+	 * @throws ContainerIocException Erro no container Ioc.
 	 */
-	public Object intanciarControlador(Class<?> controlador)
-			throws ContainerIocException {
+	public Object intanciarControlador(Class<?> controlador) throws ContainerIocException {
 		return this.containerIoc.getInstancia(controlador);
 	}
 

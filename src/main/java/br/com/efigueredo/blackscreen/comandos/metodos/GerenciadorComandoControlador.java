@@ -11,7 +11,6 @@ import br.com.efigueredo.blackscreen.comandos.metodos.exception.SolicitacaoDeMet
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ValoresIncoerentesComOsComandosExistentesException;
 import br.com.efigueredo.blackscreen.sistema.AplicacaoBackScreen;
 import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
-import br.com.efigueredo.project_loader.projeto.recursos.java.ManipuladorMetodos;
 
 /**
  * <h4>A classe {@code GerenciadorComandoControlador} é responsável por

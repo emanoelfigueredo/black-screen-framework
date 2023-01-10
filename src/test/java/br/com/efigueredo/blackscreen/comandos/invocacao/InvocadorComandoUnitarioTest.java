@@ -19,9 +19,9 @@ import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoContr
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDependenciaInvalida;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorDuploConstrutorAnotado;
 import br.com.efigueredo.blackscreen.comandos.invocacao.prototipo.PrototipoControladorSemConstrutorAdequando;
-import br.com.efigueredo.container.exception.ClasseIlegalParaIntanciaException;
+import br.com.efigueredo.container.construtor.exception.InversaoDeControleInvalidaException;
 import br.com.efigueredo.container.exception.ContainerIocException;
-import br.com.efigueredo.container.exception.InversaoDeControleInvalidaException;
+import br.com.efigueredo.container.objetos.exception.ClasseIlegalParaIntanciaException;
 
 class InvocadorComandoUnitarioTest {
 	
@@ -36,7 +36,7 @@ class InvocadorComandoUnitarioTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		MockitoAnnotations.openMocks(this);
-		this.invocador = new InvocadorComando();
+		this.invocador = new InvocadorComando("br.com.efigueredo.blackscreen.comandos");
 	}
 
 	@Test

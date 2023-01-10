@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComandoInterrompidaException;
 import br.com.efigueredo.container.exception.ContainerIocException;
-import br.com.efigueredo.project_loader.projeto.exception.PacoteInexistenteException;
 
 /**
  * <h4>Classe responsável por invocar os métodos de comando.</h4>
@@ -24,13 +23,10 @@ public class InvocadorComando {
 	/**
 	 * Construtor.
 	 *
-	 * @throws PacoteInexistenteException Ocorrerá se o pacote raiz do projeto não
-	 *                                    existir no sistema de arquivos do sistema
-	 *                                    operacional.
-	 * @throws ContainerIocException 
+	 * @throws ContainerIocException Erro no container Ioc.
 	 */
-	public InvocadorComando() throws PacoteInexistenteException, ContainerIocException {
-		this.intanciadorControlador = new InstanciadorControlador();
+	public InvocadorComando(String pacoteRaiz) throws ContainerIocException {
+		this.intanciadorControlador = new InstanciadorControlador(pacoteRaiz);
 		this.invocadorMetodo = new InvocadorMetodo();
 	}
 
@@ -52,7 +48,7 @@ public class InvocadorComando {
 	 *                                               na invocação do comando. A
 	 *                                               cuasa estára indicada na stack
 	 *                                               trace.
-	 * @throws ContainerIocException 
+	 * @throws ContainerIocException                 Erro no container Ioc.
 	 */
 	public void invocarComando(Class<?> controlador, Method metodoComando, List<String> valores)
 			throws InvocacaoComandoInterrompidaException, ContainerIocException {

@@ -5,7 +5,7 @@ package br.com.efigueredo.blackscreen.userinput.exception;
  * situações onde a expressão inserida pelo usuário é <b>inválida</b> aos
  * parâmetros do sistema.</h4>
  * 
- * @author Emanoel Figueredo
+ * @author Emanoel
  * @since 1.0.0
  */
 public class EntradaUsuarioInvalidaException extends Exception {

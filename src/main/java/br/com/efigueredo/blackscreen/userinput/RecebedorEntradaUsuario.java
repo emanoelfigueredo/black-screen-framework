@@ -9,7 +9,6 @@ import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.RespostasSi
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
 import br.com.efigueredo.container.exception.ContainerIocException;
 
-// TODO: Auto-generated Javadoc
 /**
  * <h4>Classe responsável por receber a entrada via console pelo usuário.</h4>
  * 
