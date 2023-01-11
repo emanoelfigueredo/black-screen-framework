@@ -9,7 +9,7 @@ import br.com.efigueredo.blackscreen.comandos.metodos.exception.NomeComandoInexi
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ParametroDeComandoInexistenteException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.SolicitacaoDeMetodoComandoInexistenteException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ValoresIncoerentesComOsComandosExistentesException;
-import br.com.efigueredo.blackscreen.sistema.AplicacaoBackScreen;
+import br.com.efigueredo.blackscreen.sistema.AplicacaoBlackScreen;
 import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
 
 /**
@@ -46,7 +46,7 @@ public class GerenciadorComandoControlador {
 	 *                          classe do controlador.
 	 */
 	public GerenciadorComandoControlador() {
-		this.controlador = AplicacaoBackScreen.getControladorAtual();
+		this.controlador = AplicacaoBlackScreen.getControladorAtual();
 		this.manipuladorMetodosComando = new ManipuladorMetodosComandos();
 	}
 
@@ -121,7 +121,7 @@ public class GerenciadorComandoControlador {
 	 */
 	List<Method> getMetodosAnotadosComParametroNomeCorrespondente(String nomeComando)
 			throws NomeComandoInexistenteException {
-		ManipuladorMetodos manipuladorMetodos = new ManipuladorMetodos(AplicacaoBackScreen.getControladorAtual());
+		ManipuladorMetodos manipuladorMetodos = new ManipuladorMetodos(AplicacaoBlackScreen.getControladorAtual());
 		List<Method> metodosControlador = Arrays.asList(this.controlador.getDeclaredMethods());
 		metodosControlador = manipuladorMetodos.getMetodosAnotados(Comando.class);
 		metodosControlador = this.manipuladorMetodosComando.getMetodosAnotadosPorNome(metodosControlador, nomeComando);
@@ -198,7 +198,7 @@ public class GerenciadorComandoControlador {
 	 */
 	List<Method> getMetodosPorTiposParametros(List<Method> metodos, List<Class<?>> classesDosValores)
 			throws ValoresIncoerentesComOsComandosExistentesException, SolicitacaoDeMetodoComandoInexistenteException {
-		ManipuladorMetodos manipuladorMetodos = new ManipuladorMetodos(AplicacaoBackScreen.getControladorAtual());
+		ManipuladorMetodos manipuladorMetodos = new ManipuladorMetodos(AplicacaoBlackScreen.getControladorAtual());
 		List<Method> metodosComParametros = manipuladorMetodos.getMetodosComParametros(classesDosValores);
 		if (metodosComParametros == null) {
 			throw new ValoresIncoerentesComOsComandosExistentesException(

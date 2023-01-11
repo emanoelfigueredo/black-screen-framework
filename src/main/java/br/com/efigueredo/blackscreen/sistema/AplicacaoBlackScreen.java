@@ -31,7 +31,7 @@ import br.com.efigueredo.container.exception.ContainerIocException;
  * @author Emanoel
  * @since 1.0.0
  */
-public class AplicacaoBackScreen {
+public class AplicacaoBlackScreen {
 
 	/**
 	 * Objeto {@linkplain Class} estático que representa a classe controladora
@@ -60,7 +60,7 @@ public class AplicacaoBackScreen {
 	private InvocadorComando invocadorComandos;
 
 	/** Objeto responsável pelas respostas do sistema. */
-	private RespostasSistema respostasSistema;
+	private static RespostasSistema respostasSistema;
 
 	/** O pacote raiz do projeto. */
 	private String pacoteRaizProjeto;
@@ -80,7 +80,7 @@ public class AplicacaoBackScreen {
 	 *                                              configuração de respostas do
 	 *                                              sistema.
 	 */
-	public AplicacaoBackScreen(Class<?> controladorInicial)
+	public AplicacaoBlackScreen(Class<?> controladorInicial)
 			throws ControladorAtualInexistenteException, ContainerIocException, ConfiguracaoRespostaSistemaException {
 		if (controladorInicial == null) {
 			throw new ControladorAtualInexistenteException("Não existe classe controladora setada no sistema.");
@@ -88,11 +88,11 @@ public class AplicacaoBackScreen {
 		this.pacoteRaizProjeto = controladorInicial.getPackageName();
 		Reflections reflections = new Reflections(this.pacoteRaizProjeto, new SubTypesScanner(false),
 				new TypeAnnotationsScanner());
-		AplicacaoBackScreen.controladorAtual = controladorInicial;
+		AplicacaoBlackScreen.controladorAtual = controladorInicial;
 		this.gerenteEntrada = new GerenciadorEntradaUsuario(reflections, this.pacoteRaizProjeto);
 		this.gerenteMetodos = new GerenciadorComandoControlador();
 		this.invocadorComandos = new InvocadorComando(this.pacoteRaizProjeto);
-		this.respostasSistema = new RespostasSistemaFactory().getRespostasSistema(reflections, this.pacoteRaizProjeto);
+		AplicacaoBlackScreen.respostasSistema = new RespostasSistemaFactory().getRespostasSistema(reflections, this.pacoteRaizProjeto);
 	}
 
 	/**
@@ -109,12 +109,15 @@ public class AplicacaoBackScreen {
 	 * @throws ContainerIocException Erro no Container IoC.
 	 */
 	public void executar(boolean habilitarComandoSair) throws ContainerIocException {
-		this.respostasSistema.imprimirBanner();
+		respostasSistema.imprimirBanner();
 		while (true) {
 			EntradaUsuario entradaUsuario = this.receberEntrada();
 			if (entradaUsuario == null) {
 				continue;
 			}
+			if (entradaUsuario.getComando().equals("")) {
+				continue;
+			}			
 			this.verificarComandoSair(habilitarComandoSair, entradaUsuario);
 			Method metodoComando = this.obterMetodoComando(entradaUsuario);
 			if (metodoComando == null) {
@@ -135,7 +138,7 @@ public class AplicacaoBackScreen {
 	private void verificarComandoSair(boolean habilitarComandoSair, EntradaUsuario entradaUsuario) {
 		if (habilitarComandoSair
 				&& (entradaUsuario.getComando().equals("sair") || entradaUsuario.getComando().equals("exit"))) {
-			this.respostasSistema.imprimirMensagem("Encerrando sistema");
+			respostasSistema.imprimirMensagem("Encerrando sistema");
 			System.exit(0);
 		}
 	}
@@ -156,7 +159,7 @@ public class AplicacaoBackScreen {
 		try {
 			entradaUsuario = this.gerenteEntrada.buildEntradaUsuario();
 		} catch (EntradaUsuarioInvalidaException e) {
-			this.respostasSistema.imprimirMensagemErro("Insira uma expressão válida");
+			respostasSistema.imprimirMensagemErro("Insira uma expressão válida");
 		}
 		return entradaUsuario;
 	}
@@ -175,14 +178,14 @@ public class AplicacaoBackScreen {
 		try {
 			metodoComando = this.gerenteMetodos.getMetodoComando(entradaUsuario);
 		} catch (NomeComandoInexistenteException e) {
-			this.respostasSistema.imprimirMensagemErro("O comando " + entradaUsuario.getComando() + " não existe");
+			respostasSistema.imprimirMensagemErro("O comando " + entradaUsuario.getComando() + " não existe");
 		} catch (ParametroDeComandoInexistenteException e) {
-			this.respostasSistema.imprimirMensagemErro("O parâmetro de comando " + entradaUsuario.getParametros().get(0)
+			respostasSistema.imprimirMensagemErro("O parâmetro de comando " + entradaUsuario.getParametros().get(0)
 					+ " não existe para o comando " + entradaUsuario.getComando());
 		} catch (ValoresIncoerentesComOsComandosExistentesException e) {
-			this.respostasSistema.imprimirMensagemErro("Os valores inseridos não podem ser aceitos pelo comando");
+			respostasSistema.imprimirMensagemErro("Os valores inseridos não podem ser aceitos pelo comando");
 		} catch (SolicitacaoDeMetodoComandoInexistenteException e) {
-			this.respostasSistema.imprimirMensagemErro("Não existe comando que corresponda ao formato inserido.");
+			respostasSistema.imprimirMensagemErro("Não existe comando que corresponda ao formato inserido.");
 		}
 		return metodoComando;
 	}
@@ -202,7 +205,7 @@ public class AplicacaoBackScreen {
 		try {
 			this.invocadorComandos.invocarComando(controladorAtual, metodoComando, entradaUsuario.getValores());
 		} catch (InvocacaoComandoInterrompidaException e) {
-			this.respostasSistema.imprimirMensagemErro("A invocação do comando foi interrompida");
+			respostasSistema.imprimirMensagemErro("A invocação do comando foi interrompida");
 			e.printStackTrace();
 		}
 	}
@@ -213,7 +216,7 @@ public class AplicacaoBackScreen {
 	 * @return Objeto {@linkplain Class} da classe controladora atual.
 	 */
 	public static Class<?> getControladorAtual() {
-		return AplicacaoBackScreen.controladorAtual;
+		return AplicacaoBlackScreen.controladorAtual;
 	}
 
 	/**
@@ -223,7 +226,7 @@ public class AplicacaoBackScreen {
 	 * @return {@linkplain ContainerIoc}
 	 */
 	public static ContainerIoc getContainerIoc() {
-		return AplicacaoBackScreen.containerIoc;
+		return AplicacaoBlackScreen.containerIoc;
 	}
 
 	/**
@@ -233,7 +236,16 @@ public class AplicacaoBackScreen {
 	 *               controladora atual do sistema.
 	 */
 	public static void setControladorAtual(Class<?> classe) {
-		AplicacaoBackScreen.controladorAtual = classe;
+		AplicacaoBlackScreen.controladorAtual = classe;
+	}
+	
+	/**
+	 * Obtenha o objeto responsável pelas respostas do sistema.
+	 * 
+	 * @return Objeto responsável pelas respostas do sistema.
+	 */
+	public static RespostasSistema getRespostasSistema() {
+		return AplicacaoBlackScreen.respostasSistema;
 	}
 
 }

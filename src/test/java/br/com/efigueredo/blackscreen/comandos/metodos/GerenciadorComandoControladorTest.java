@@ -18,18 +18,18 @@ import br.com.efigueredo.blackscreen.comandos.metodos.exception.ParametroDeComan
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.SolicitacaoDeMetodoComandoInexistenteException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ValoresIncoerentesComOsComandosExistentesException;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControlador4;
-import br.com.efigueredo.blackscreen.sistema.AplicacaoBackScreen;
+import br.com.efigueredo.blackscreen.sistema.AplicacaoBlackScreen;
 import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
 
 @Tag("integracao")
 class GerenciadorComandoControladorTest {
 
-	private AplicacaoBackScreen sistema;
+	private AplicacaoBlackScreen sistema;
 	private GerenciadorComandoControlador gerenciador;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.sistema = new AplicacaoBackScreen(PrototipoControlador4.class);
+		this.sistema = new AplicacaoBlackScreen(PrototipoControlador4.class);
 		this.gerenciador = new GerenciadorComandoControlador();
 	}
 

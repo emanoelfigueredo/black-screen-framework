@@ -52,7 +52,7 @@ public class RecebedorEntradaUsuario {
 	 */
 	public String receberEntrada() {
 		this.respostas.imprimirIndicador();
-		return this.scan.nextLine().strip().toLowerCase();
+		return this.scan.nextLine().strip();
 	}
 
 }

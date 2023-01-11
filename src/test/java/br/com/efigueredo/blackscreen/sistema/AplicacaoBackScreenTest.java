@@ -12,12 +12,12 @@ public class AplicacaoBackScreenTest {
 
 	@Test
 	void deveriaLancarExcecao_QuandoAClasseControladoraInicialValeNull() {
-		assertThrows(ControladorAtualInexistenteException.class, () -> new AplicacaoBackScreen(null));
+		assertThrows(ControladorAtualInexistenteException.class, () -> new AplicacaoBlackScreen(null));
 	}
 	
 	@Test
 	void naoDeveriaLancarExcecao_QuandoAClasseControladoraInicialNaoValerNull() {
-		assertDoesNotThrow(() -> new AplicacaoBackScreen(PrototipoControlador.class));
+		assertDoesNotThrow(() -> new AplicacaoBlackScreen(PrototipoControlador.class));
 	}
 
 }
