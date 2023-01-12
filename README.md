@@ -159,6 +159,8 @@ O método __configurarRespostas__ disponibiliza o objeto __IntefaceConfiguracaoR
 
 > Também é possível setar o banner do sistema e indicador do sistema
 
+> Crie banners para o sistema em -> https://manytools.org/hacker-tools/ascii-banner/
+
 ### Exemplo
 
 ~~~java
