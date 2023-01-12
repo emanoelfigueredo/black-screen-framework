@@ -29,7 +29,7 @@ class GerenciadorComandoControladorTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.sistema = new AplicacaoBlackScreen(PrototipoControlador4.class);
+		this.sistema = new AplicacaoBlackScreen(PrototipoControlador4.class, null);
 		this.gerenciador = new GerenciadorComandoControlador();
 	}
 

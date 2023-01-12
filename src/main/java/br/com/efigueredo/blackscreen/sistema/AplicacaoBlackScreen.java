@@ -72,6 +72,8 @@ public class AplicacaoBlackScreen {
 	 *
 	 * @param controladorInicial Objeto {@linkplain Class} que represente a classe
 	 *                           constroladora inicial.
+	 * @param pacoteRaizProjeto  Pacote raiz do projeto. Ou o de maior hierarquia
+	 *                           possível.
 	 * @throws ControladorAtualInexistenteException Ocorrerá se o paramâmetro
 	 *                                              controladorInicial for
 	 *                                              preenchido com valor null.
@@ -80,19 +82,20 @@ public class AplicacaoBlackScreen {
 	 *                                              configuração de respostas do
 	 *                                              sistema.
 	 */
-	public AplicacaoBlackScreen(Class<?> controladorInicial)
+	public AplicacaoBlackScreen(Class<?> controladorInicial, String pacoteRaizProjeto)
 			throws ControladorAtualInexistenteException, ContainerIocException, ConfiguracaoRespostaSistemaException {
 		if (controladorInicial == null) {
 			throw new ControladorAtualInexistenteException("Não existe classe controladora setada no sistema.");
 		}
-		this.pacoteRaizProjeto = controladorInicial.getPackageName();
+		this.pacoteRaizProjeto = pacoteRaizProjeto;
 		Reflections reflections = new Reflections(this.pacoteRaizProjeto, new SubTypesScanner(false),
 				new TypeAnnotationsScanner());
 		AplicacaoBlackScreen.controladorAtual = controladorInicial;
 		this.gerenteEntrada = new GerenciadorEntradaUsuario(reflections, this.pacoteRaizProjeto);
 		this.gerenteMetodos = new GerenciadorComandoControlador();
 		this.invocadorComandos = new InvocadorComando(this.pacoteRaizProjeto);
-		AplicacaoBlackScreen.respostasSistema = new RespostasSistemaFactory().getRespostasSistema(reflections, this.pacoteRaizProjeto);
+		AplicacaoBlackScreen.respostasSistema = new RespostasSistemaFactory().getRespostasSistema(reflections,
+				this.pacoteRaizProjeto);
 	}
 
 	/**
@@ -117,7 +120,7 @@ public class AplicacaoBlackScreen {
 			}
 			if (entradaUsuario.getComando().equals("")) {
 				continue;
-			}			
+			}
 			this.verificarComandoSair(habilitarComandoSair, entradaUsuario);
 			Method metodoComando = this.obterMetodoComando(entradaUsuario);
 			if (metodoComando == null) {
@@ -238,7 +241,7 @@ public class AplicacaoBlackScreen {
 	public static void setControladorAtual(Class<?> classe) {
 		AplicacaoBlackScreen.controladorAtual = classe;
 	}
-	
+
 	/**
 	 * Obtenha o objeto responsável pelas respostas do sistema.
 	 * 

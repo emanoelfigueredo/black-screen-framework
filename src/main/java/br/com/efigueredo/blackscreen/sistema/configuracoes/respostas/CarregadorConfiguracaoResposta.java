@@ -76,7 +76,7 @@ public class CarregadorConfiguracaoResposta {
 	public Class<?> getClasseConfiguracaoResposta()
 			throws ClassesDeConfiguracoesInexistentesException, ClassesDeConfiguracoesRespostaInexistentesException,
 			MaisDeUmaClasseDeConfiguracaoResposta, ClasseDeConfiguracaoSemImplementacaoException {
-		List<Class<?>> classesAnotadas = this.reflections.getTypesAnnotatedWith(ConfiguracaoSistema.class).stream().toList();
+		List<Class<?>> classesAnotadas = this.reflections.getTypesAnnotatedWith(ConfiguracaoSistema.class).stream().toList();	
 		this.verificador.verificarSeExisteAlgumaClasseDeConfiguracao(classesAnotadas);
 		List<Class<?>> classesDeConfiguracaoMensagem = this.obterClassesDeConfiguracaoRespostas(classesAnotadas);
 		this.verificador.verificarSeExisteAlgumaClasseDeConfiguracaoRespostas(classesDeConfiguracaoMensagem);
