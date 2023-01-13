@@ -55,7 +55,7 @@ Framework para aplicações comand-line.
 
 <a name="utilizar-setup"></a>
 ### Setup
-Instâncie o objeto __AplicacaoBlackScreen__, inserindo no seu construtor, a classe controladora inicial.
+Instâncie o objeto __AplicacaoBlackScreen__, inserindo no seu construtor, a classe controladora inicial e o pacote raiz de seu projeto. Para que o mapeameto de todas as classes seja garantido, insira o pacote de mais alta hierarquia.
 Utilize o método __executar__, passando como parâmetro um booleano. Onde true habilita o comando de sair padrão, e false desabilita.
  ~~~java
 import br.com.efigueredo.blackscreen.sistema.AplicacaoBlackScreen;
@@ -68,7 +68,7 @@ public class Main {
 	public static void main(String[] args)
 			throws ControladorAtualInexistenteException, ContainerIocException, ConfiguracaoRespostaSistemaException {
 
-		AplicacaoBlackScreen app = new AplicacaoBlackScreen(Controlador.class);
+		AplicacaoBlackScreen app = new AplicacaoBlackScreen(Controlador.class, "br.com.efigueredo.blackscreen");
 		app.executar(true);
 		
 	}
