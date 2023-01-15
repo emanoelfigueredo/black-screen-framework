@@ -59,45 +59,45 @@ class ManipuladorExpressaoSomenteValoresTest {
 		
 		String expessao8 = "\"valor1 @\"com@\" detalhes\" valor2 valor3";
 		List<String> resultado8 = this.manipulador.extrairValores(expessao8);
-		assertEquals("valor1 @\"com@\" detalhes", resultado8.get(0));
+		assertEquals("valor1 \"com\" detalhes", resultado8.get(0));
 		assertEquals("valor2", resultado8.get(1));
 		assertEquals("valor3", resultado8.get(2));
 		
 		String expessao9 = "valor1 \"valor2 @\"com@\" detalhes\" valor3";
 		List<String> resultado9 = this.manipulador.extrairValores(expessao9);
 		assertEquals("valor1", resultado9.get(0));
-		assertEquals("valor2 @\"com@\" detalhes", resultado9.get(1));
+		assertEquals("valor2 \"com\" detalhes", resultado9.get(1));
 		assertEquals("valor3", resultado9.get(2));
 		
 		String expessao10 = "valor1 valor2 \"valor3 @\"com@\" detalhes\"";
 		List<String> resultado10 = this.manipulador.extrairValores(expessao10);
 		assertEquals(resultado10.get(0), "valor1");
 		assertEquals(resultado10.get(1), "valor2");
-		assertEquals(resultado10.get(2), "valor3 @\"com@\" detalhes");
+		assertEquals(resultado10.get(2), "valor3 \"com\" detalhes");
 	
 		String expessao11 = "\"valor1 @\"com@\" detalhes\" \"valor2 @\"com@\" detalhes\" valor3";
 		List<String> resultado11 = this.manipulador.extrairValores(expessao11);
-		assertEquals(resultado11.get(0), "valor1 @\"com@\" detalhes");
-		assertEquals(resultado11.get(1), "valor2 @\"com@\" detalhes");
+		assertEquals(resultado11.get(0), "valor1 \"com\" detalhes");
+		assertEquals(resultado11.get(1), "valor2 \"com\" detalhes");
 		assertEquals(resultado11.get(2), "valor3");
 		
 		String expessao12 = "valor1 \"valor2 @\"com@\" detalhes\" \"valor3 @\"com@\" detalhes\"";
 		List<String> resultado12 = this.manipulador.extrairValores(expessao12);
 		assertEquals(resultado12.get(0), "valor1");
-		assertEquals(resultado12.get(1), "valor2 @\"com@\" detalhes");
-		assertEquals(resultado12.get(2), "valor3 @\"com@\" detalhes");
+		assertEquals(resultado12.get(1), "valor2 \"com\" detalhes");
+		assertEquals(resultado12.get(2), "valor3 \"com\" detalhes");
 		
 		String expessao13 = "\"valor1 @\"com@\" detalhes\" \"valor2 @\"com@\" detalhes\" \"valor3 @\"com@\" detalhes\"";
 		List<String> resultado13 = this.manipulador.extrairValores(expessao13);
-		assertEquals(resultado13.get(0), "valor1 @\"com@\" detalhes");
-		assertEquals(resultado13.get(1), "valor2 @\"com@\" detalhes");
-		assertEquals(resultado13.get(2), "valor3 @\"com@\" detalhes");
+		assertEquals(resultado13.get(0), "valor1 \"com\" detalhes");
+		assertEquals(resultado13.get(1), "valor2 \"com\" detalhes");
+		assertEquals(resultado13.get(2), "valor3 \"com\" detalhes");
 		
 		String expessao14 = "\"valor1 @\"com@\" detalhes\" \"valor2 com detalhes\" \"valor3 @\"com@\" detalhes\"";
 		List<String> resultado14 = this.manipulador.extrairValores(expessao14);
-		assertEquals(resultado14.get(0), "valor1 @\"com@\" detalhes");
+		assertEquals(resultado14.get(0), "valor1 \"com\" detalhes");
 		assertEquals(resultado14.get(1), "valor2 com detalhes");
-		assertEquals(resultado14.get(2), "valor3 @\"com@\" detalhes");
+		assertEquals(resultado14.get(2), "valor3 \"com\" detalhes");
 		
 		
 	}

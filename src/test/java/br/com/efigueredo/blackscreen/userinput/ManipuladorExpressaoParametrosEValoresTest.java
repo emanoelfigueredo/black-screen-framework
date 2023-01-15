@@ -54,6 +54,13 @@ class ManipuladorExpressaoParametrosEValoresTest {
 		assertEquals(resultado51.get("param1").get(1), "valor2 com detalhes");
 		assertEquals(resultado51.get("param2").get(0), "valor2 com detalhes");
 		assertEquals(resultado51.get("param2").get(1), "valor3 com detalhes");
+		
+		String expressaoComAspas17 = "--param1 \"valor1 com detalhes\" \"valor1 com detalhes\" --param2 \"valor2 com detalhes\" \"valor2 com detalhes\"";
+		Map<String, List<String>> resultado52 = this.manipulador.extrairParametrosEValores(expressaoComAspas17);
+		assertEquals(resultado52.get("param1").get(0), "valor1 com detalhes");
+		assertEquals(resultado52.get("param1").get(1), "valor1 com detalhes");
+		assertEquals(resultado52.get("param2").get(0), "valor2 com detalhes");
+		assertEquals(resultado52.get("param2").get(1), "valor2 com detalhes");
 
 		String expressaoComAspas2 = "param1 \"valor1 com detalhes\"";
 		Map<String, List<String>> resultado3 = this.manipulador.extrairParametrosEValores(expressaoComAspas2);

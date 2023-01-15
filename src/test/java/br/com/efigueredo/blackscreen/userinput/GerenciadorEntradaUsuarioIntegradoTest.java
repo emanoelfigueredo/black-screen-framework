@@ -96,7 +96,7 @@ public class GerenciadorEntradaUsuarioIntegradoTest {
 		
 //		String expressao4 = "comando --param1 valor1 \"valor\"";
 		
-		String expressao4 = "comando --param1 valor --param valor1 valor2 valor3";
+		String expressao4 = "comando --param1 valor \"valor2 @\"com@\" detalhes\" --param valor1 valor2 valor3";
 		
 		ExpressaoUsuario manipularExpressao = this.gerenciador.manipularExpressao(expressao4);
 		

@@ -64,41 +64,6 @@ public class ManipuladorExpressaoParametrosEValores {
 		return mapaParametroValor;
 	}
 
-	
-
-	private String inserirAspasEscapadasNoValor(String paramValor, int tamanhoParametro,
-			String valorSemAspasEscapadas) {
-		int begin = obterIndexInicialDasAspasEscapadasDoValor(paramValor, tamanhoParametro);
-		int end = obterIndexFinalDasAspasEscapadasDoValor(paramValor, tamanhoParametro, begin);
-		return recolocarAspasEscapadasNoValor(valorSemAspasEscapadas, begin, end);
-	}
-
-	private String recolocarAspasEscapadasNoValor(String valor, int begin, int end) {
-		StringBuilder builder = new StringBuilder();
-		return builder.append(valor.substring(0, begin)).append("\"").append(valor.substring(begin, end)).append("\"")
-				.append(valor.substring(end, valor.length())).toString();
-	}
-
-	private int obterIndexFinalDasAspasEscapadasDoValor(String paramValor, int tamanhoParametro, int begin) {
-		int end = obterIndexFinalDasAspasEscape(paramValor);
-		return end - tamanhoParametro - 3;
-	}
-
-	private int obterIndexInicialDasAspasEscapadasDoValor(String paramValor, int tamanhoParametro) {
-		int begin = obterIndexInicialDasAspasEscape(paramValor);
-		return begin - tamanhoParametro - 2;
-
-	}
-
-	private int obterIndexInicialDasAspasEscape(String paramValor) {
-		return paramValor.indexOf("@\"");
-	}
-
-	private int obterIndexFinalDasAspasEscape(String paramValor) {
-		int indexBegin = obterIndexInicialDasAspasEscape(paramValor);
-		return indexBegin + paramValor.substring(indexBegin + 1).indexOf("@\"");
-	}
-
 	private String obterParametro(String expressao, int indexSeparacao) {
 		return expressao.substring(0, indexSeparacao);
 	}

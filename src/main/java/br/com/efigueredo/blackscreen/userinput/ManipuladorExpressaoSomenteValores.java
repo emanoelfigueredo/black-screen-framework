@@ -114,7 +114,7 @@ public class ManipuladorExpressaoSomenteValores {
 		String valorResultado = expressaoSemAspasIniciais.substring(0, indexUltimaAspaDoValor);
 		String expressaoResultadoCompletaComAspasIniciais = expressaoManipulacao.substring(0,
 				indexUltimaAspaDoValor + 2);
-		expressaoManipulacao = expressaoManipulacao.replace(expressaoResultadoCompletaComAspasIniciais, "").strip();
+		expressaoManipulacao = expressaoManipulacao.replaceFirst(expressaoResultadoCompletaComAspasIniciais, "").strip();
 		String[] resultado = { valorResultado, expressaoManipulacao };
 		return resultado;
 	}
