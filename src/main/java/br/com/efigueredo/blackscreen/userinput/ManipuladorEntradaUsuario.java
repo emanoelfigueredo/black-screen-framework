@@ -37,7 +37,7 @@ public class ManipuladorEntradaUsuario {
 		return expressao.split(" ")[0];
 	}
 	
-	public Map<String, String> extrairParametrosEValores(String expressao) {
+	public Map<String, List<String>> extrairParametrosEValores(String expressao) throws ExpressaoInvalidaException {
 		return this.manipuladorParametrosValores.extrairParametrosEValores(expressao);
 	}
 

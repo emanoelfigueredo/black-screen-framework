@@ -9,7 +9,7 @@ package br.com.efigueredo.blackscreen.userinput.exception;
  * @author Emanoel
  * @since 1.0.0
  */
-public class CampoComandoInvalidoExpception extends EntradaUsuarioInvalidaException {
+public class CampoComandoInvalidoExpception extends ExpressaoInvalidaException {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,6 +1,7 @@
 package br.com.efigueredo.blackscreen.userinput;
 
-import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
 import br.com.efigueredo.blackscreen.userinput.verificacao.ConfiguracaoVerificacoes;
 import br.com.efigueredo.blackscreen.userinput.verificacao.VerificadorExpressoes;
 
@@ -46,7 +47,7 @@ public class GerenciadorVerificacaoesExpressaoUsuario {
 	 *                                         será lançado uma sub-exceção
 	 *                                         representando o erro.
 	 */
-	public void executar(ExpressaoUsuario expressao) throws EntradaUsuarioInvalidaException {
+	public void executar(ExpressaoUsuario expressao) throws ExpressaoInvalidaException {
 		ConfiguracaoVerificacoes configuracao = this.getObjetoConfiguracaoDeVerificacoes();
 		VerificadorExpressoes verificador = this.getVerificadorExpressoes(configuracao);
 		verificador.executarVerificacao(expressao);

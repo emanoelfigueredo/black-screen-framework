@@ -1,8 +1,7 @@
 package br.com.efigueredo.blackscreen.userinput.verificacao;
 
-import br.com.efigueredo.blackscreen.userinput.ExpressaoUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.CampoComandoInvalidoExpception;
-import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
 
 /**
  * <h4>A classe {@code VerificacaoExpressaoUsuarioComando} representa a

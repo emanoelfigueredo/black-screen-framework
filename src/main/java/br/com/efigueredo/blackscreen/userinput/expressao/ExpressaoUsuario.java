@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.userinput;
+package br.com.efigueredo.blackscreen.userinput.expressao;
 
 /**
  * <h4>A classe representa a expressão inserida pelo usuário.</h4>

@@ -1,7 +1,7 @@
 package br.com.efigueredo.blackscreen.userinput.verificacao;
 
-import br.com.efigueredo.blackscreen.userinput.ExpressaoUsuario;
-import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
 
 /**
  * <h4>A classe abstrata {@code VerificacaoExpressaoUsuario} é uma interface
@@ -52,7 +52,7 @@ public abstract class VerificacaoExpressaoUsuario {
 	 *                                         {@code verificacao} retorne o valor
 	 *                                         true.
 	 */
-	protected abstract void jogarExcecao() throws EntradaUsuarioInvalidaException;
+	protected abstract void jogarExcecao() throws ExpressaoInvalidaException;
 
 	/**
 	 * Método responsável por usar dos métodos especificados {@code verificacao}
@@ -66,7 +66,7 @@ public abstract class VerificacaoExpressaoUsuario {
 	 *                                         {@code verificacao} retorne o valor
 	 *                                         true.
 	 */
-	public void verificar(ExpressaoUsuario expressao) throws EntradaUsuarioInvalidaException {
+	public void verificar(ExpressaoUsuario expressao) throws ExpressaoInvalidaException {
 		if (this.verificacao(expressao)) {
 			this.jogarExcecao();
 			return;

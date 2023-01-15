@@ -6,8 +6,10 @@ import java.util.Map;
 import org.reflections.Reflections;
 
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
-import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
 import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioParametrosValores;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioValores;
 import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
@@ -67,11 +69,12 @@ public class GerenciadorEntradaUsuario {
 	 */
 	public ExpressaoUsuario manipularExpressao(String expressao) throws ExpressaoInvalidaException {
 		String comando = this.manipulador.extrairComando(expressao);
-		if(expressao.replace(comando, "").startsWith("--")) {
-			Map<String, String> parametrosValores = this.manipulador.extrairParametrosEValores(expressao);
+		String expressaoSemComando = expressao.replace(comando, "").strip();
+		if(expressaoSemComando.startsWith("--")) {
+			Map<String, List<String>> parametrosValores = this.manipulador.extrairParametrosEValores(expressaoSemComando);
 			return new ExpressaoUsuarioParametrosValores(comando, parametrosValores);
 		}
-		List<String> valores = this.manipulador.extrairValoresExpressaoSemParametros(expressao);
+		List<String> valores = this.manipulador.extrairValoresExpressaoSemParametros(expressaoSemComando);
 		return new ExpressaoUsuarioValores(comando, valores);
 	}
 
@@ -85,7 +88,7 @@ public class GerenciadorEntradaUsuario {
 	 *                                         será lançado uma sub-exceção
 	 *                                         representando o erro.
 	 */
-	public void executarVerificacoesExpressao(ExpressaoUsuario expressaoUsuario) throws EntradaUsuarioInvalidaException {
+	public void executarVerificacoesExpressao(ExpressaoUsuario expressaoUsuario) throws ExpressaoInvalidaException {
 		this.gerenciadorVerificacoes.executar(expressaoUsuario);
 	}
 
@@ -102,7 +105,7 @@ public class GerenciadorEntradaUsuario {
 	 *                                         representando o erro.
 	 * @throws ExpressaoInvalidaException 
 	 */
-	public ExpressaoUsuario obterExpressaoUsuario() throws EntradaUsuarioInvalidaException, ExpressaoInvalidaException {
+	public ExpressaoUsuario obterExpressaoUsuario() throws ExpressaoInvalidaException {
 		String expressao = this.receberExpressao();
 		ExpressaoUsuario entrada = this.manipularExpressao(expressao);
 		this.executarVerificacoesExpressao(entrada);

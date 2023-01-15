@@ -1,7 +1,7 @@
 package br.com.efigueredo.blackscreen.userinput.verificacao;
 
-import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
-import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
 
 /**
  * <h4>A classe {@code VerificacaoNulaUsuarioParametro} não representa
@@ -31,7 +31,7 @@ public class VerificacaoNulaUsuarioParametro extends VerificacaoExpressaoUsuario
 	 * @return true, pois é o objeto finalizador da cadeia de instâncias.
 	 */
 	@Override
-	protected boolean verificacao(EntradaUsuario entrada) {
+	protected boolean verificacao(ExpressaoUsuario expressao) {
 		return true;
 	}
 
@@ -41,7 +41,7 @@ public class VerificacaoNulaUsuarioParametro extends VerificacaoExpressaoUsuario
 	 * @throws EntradaUsuarioInvalidaException
 	 */
 	@Override
-	protected void jogarExcecao() throws EntradaUsuarioInvalidaException {
+	protected void jogarExcecao() throws ExpressaoInvalidaException {
 		return;
 	}
 

@@ -15,7 +15,11 @@ public class ManipuladorExpressaoSomenteValores {
 			expressaoManipulacao = extrairValoresComAspas(listaValores, expressaoManipulacao);
 			verificarValorInseridoIncorretamente(expressaoManipulacao);
 		}
-		return listaValores;
+		return this.removerArrobasDeEscapes(listaValores);
+	}
+
+	private List<String> removerArrobasDeEscapes(List<String> listaValores) {
+		return listaValores.stream().map(v -> v.replace("@\"", "\"")).toList();
 	}
 
 	private boolean expressaoEstaVazia(String expressao) {

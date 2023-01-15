@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.userinput;
+package br.com.efigueredo.blackscreen.userinput.expressao;
 
 import java.util.List;
 

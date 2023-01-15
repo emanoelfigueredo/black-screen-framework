@@ -8,7 +8,7 @@ package br.com.efigueredo.blackscreen.userinput.exception;
  * @author Emanoel
  * @since 1.0.0
  */
-public class MaisDeUmParametroNaExpressaoException extends EntradaUsuarioInvalidaException {
+public class MaisDeUmParametroNaExpressaoException extends ExpressaoInvalidaException {
 
 	private static final long serialVersionUID = 1L;
 

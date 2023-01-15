@@ -24,7 +24,7 @@ public class ConfiguracaoVerificacoes {
 	 */
 	public VerificacaoExpressaoUsuario getChainVerificacaoExpressaoUsuario() {
 		VerificacaoExpressaoUsuario cadeia = new VerificacaoExpressaoUsuarioComando(
-				new VerificacaoExpressaoUsuarioParametro(new VerificacaoNulaUsuarioParametro()));
+				new VerificacaoNulaUsuarioParametro());
 		return cadeia;
 	}
 
