@@ -48,8 +48,16 @@ public class GerenciadorEntradaUsuarioIntegradoTest {
 		ExpressaoUsuario expressaoUsuarioObj2 = this.gerenciador.manipularExpressao(expressao2);
 		ExpressaoUsuarioParametrosValores expressaoConvertida2 = (ExpressaoUsuarioParametrosValores) expressaoUsuarioObj2;
 		assertEquals("--comando", expressaoConvertida2.getComando());
-		Map<String, String> parametrosValores = expressaoConvertida2.getParametrosValores();
+		Map<String, List<String>> parametrosValores = expressaoConvertida2.getParametrosValores();
 		this.verificarParametrosValores(parametrosValores);
+		
+		String expressao3 = "--comando --param1 valor1 \"valor1 com detalhes\" \"valor1 @\"com@\" detalhes\" \"valor1 @\"com@\" detalhes\" "
+				+ "--param2 valor2 \"valor2 com detalhes\" \"valor2 @\"com@\" detalhes\" \"valor2 @\"com@\" detalhes\"";
+		ExpressaoUsuario expressaoUsuarioObj3 = this.gerenciador.manipularExpressao(expressao3);
+		ExpressaoUsuarioParametrosValores expressaoConvertida3 = (ExpressaoUsuarioParametrosValores) expressaoUsuarioObj3;
+		assertEquals("--comando", expressaoConvertida2.getComando());
+		Map<String, List<String>> parametrosValores2 = expressaoConvertida3.getParametrosValores();
+		this.verificarParametrosEVariosValores(parametrosValores2);
 	}
 
 	@Test
@@ -66,15 +74,36 @@ public class GerenciadorEntradaUsuarioIntegradoTest {
 		ExpressaoUsuario expressaoUsuarioObj2 = this.gerenciador.manipularExpressao(expressao2);
 		ExpressaoUsuarioParametrosValores expressaoConvertida2 = (ExpressaoUsuarioParametrosValores) expressaoUsuarioObj2;
 		assertEquals("comando", expressaoConvertida2.getComando());
-		Map<String, String> parametrosValores = expressaoConvertida2.getParametrosValores();
+		Map<String, List<String>> parametrosValores = expressaoConvertida2.getParametrosValores();
 		this.verificarParametrosValores(parametrosValores);
+		
+		String expressao3 = "comando --param1 valor1 \"valor1 com detalhes\" \"valor1 @\"com@\" detalhes\" \"valor1 @\"com@\" detalhes\" "
+				+ "--param2 valor2 \"valor2 com detalhes\" \"valor2 @\"com@\" detalhes\" \"valor2 @\"com@\" detalhes\"";
+		ExpressaoUsuario expressaoUsuarioObj3 = this.gerenciador.manipularExpressao(expressao3);
+		ExpressaoUsuarioParametrosValores expressaoConvertida3 = (ExpressaoUsuarioParametrosValores) expressaoUsuarioObj3;
+		assertEquals("comando", expressaoConvertida2.getComando());
+		Map<String, List<String>> parametrosValores2 = expressaoConvertida3.getParametrosValores();
+		this.verificarParametrosEVariosValores(parametrosValores2);
 	}
 
-	private void verificarParametrosValores(Map<String, String> parametrosValores) {
+	private void verificarParametrosValores(Map<String, List<String>> parametrosValores) {
 		assertTrue(parametrosValores.size() == 3);
-		assertTrue(parametrosValores.get("param1").equals("valor1"));
-		assertTrue(parametrosValores.get("param2").equals("valor2 com detalhes"));
-		assertTrue(parametrosValores.get("param3").equals("valor3 \"com\" detalhes"));
+		assertTrue(parametrosValores.get("param1").get(0).equals("valor1"));
+		assertTrue(parametrosValores.get("param2").get(0).equals("valor2 com detalhes"));
+		assertTrue(parametrosValores.get("param3").get(0).equals("valor3 \"com\" detalhes"));
+	}
+	
+	private void verificarParametrosEVariosValores(Map<String, List<String>> parametrosValores) {
+		List<String> parametro1 = parametrosValores.get("param1");
+		List<String> parametro2 = parametrosValores.get("param2");
+		assertTrue(parametro1.get(0).equals("valor1"));
+		assertTrue(parametro1.get(1).equals("valor1 com detalhes"));
+		assertTrue(parametro1.get(2).equals("valor1 \"com\" detalhes"));
+		assertTrue(parametro1.get(3).equals("valor1 \"com\" detalhes"));
+		assertTrue(parametro2.get(0).equals("valor2"));
+		assertTrue(parametro2.get(1).equals("valor2 com detalhes"));
+		assertTrue(parametro2.get(2).equals("valor2 \"com\" detalhes"));
+		assertTrue(parametro2.get(3).equals("valor2 \"com\" detalhes"));
 	}
 
 	private void verificarValores(List<String> valores) {
@@ -86,31 +115,13 @@ public class GerenciadorEntradaUsuarioIntegradoTest {
 
 	@Test
 	public void deveriaLancarExcecao_QuandoExpressaComParametrosEValoresIncorretos() throws ExpressaoInvalidaException {
-//		String expressao1 = "comando --param1 valor1 --param2";
-//		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.manipularExpressao(expressao1),
-//				"A expressão inserida contém um parâmetro sem valor correspondente");
-//
-//		String expressao2 = "comando --param1 valor1 valor";
-//		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.manipularExpressao(expressao2),
-//				"A expressão inserida possui valores inseridos de forma incorreta.");
+		String expressao1 = "comando --param1 valor1 --param2";
+		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.manipularExpressao(expressao1),
+				"A expressão inserida contém um parâmetro sem valor correspondente");
 		
-//		String expressao4 = "comando --param1 valor1 \"valor\"";
-		
-		String expressao4 = "comando --param1 valor \"valor2 @\"com@\" detalhes\" --param valor1 valor2 valor3";
-		
-		ExpressaoUsuario manipularExpressao = this.gerenciador.manipularExpressao(expressao4);
-		
-		ExpressaoUsuarioParametrosValores e = (ExpressaoUsuarioParametrosValores) manipularExpressao;
-		Map<String, List<String>> parametrosValores = e.getParametrosValores();
-		
-		System.out.println(parametrosValores);
-		
-//		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.manipularExpressao(expressao4),
-//				"A expressão inserida possui valores inseridos de forma incorreta.");
-
-//		String expressao3 = "comando --param1 --param2 valor";
-//		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.manipularExpressao(expressao3),
-//				"A expressão inserida contém um parâmetro sem valor correspondente");
+		String expressao3 = "comando --param1 --param2 valor";
+		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.manipularExpressao(expressao3),
+				"A expressão inserida contém um parâmetro sem valor correspondente");
 	}
 	
 	@Test
@@ -142,16 +153,5 @@ public class GerenciadorEntradaUsuarioIntegradoTest {
 		ExpressaoUsuario expressaoUsuarioObj3 = this.gerenciador.manipularExpressao(expressao3);
 		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.executarVerificacoesExpressao(expressaoUsuarioObj3));
 	}	
-//	@Test
-//	public void deveriaJogarExcecao_QuandoVerificarExpressao_DadoEntradaUsuarioIncorretoParametro() {
-//		EntradaUsuario entradaUsuario = new EntradaUsuario("comando", Arrays.asList("--param1", "--param2"), Arrays.asList("valor"));
-//		assertThrows(EntradaUsuarioInvalidaException.class, () -> this.gerenciador.executarVerificacoesExpressao(entradaUsuario));
-//	}
-//	
-//	@Test
-//	public void deveriaJogarExcecao_QuandoVerificarExpressao_DadoEntradaUsuarioIncorretoComandoParametro() {
-//		EntradaUsuario entradaUsuario = new EntradaUsuario("--comando", Arrays.asList("--param1", "--param2"), Arrays.asList("valor"));
-//		assertThrows(EntradaUsuarioInvalidaException.class, () -> this.gerenciador.executarVerificacoesExpressao(entradaUsuario));
-//	}
 
 }

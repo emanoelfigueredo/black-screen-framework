@@ -41,13 +41,17 @@ class GerenciadorVerificacaoesExpressaoUsuarioTest {
 		ExpressaoUsuarioValores expressao3 = new ExpressaoUsuarioValores(comando, valores);
 		assertDoesNotThrow(() -> this.gerenciador.executar(expressao3));
 		
-		Map<String, String> parametrosValores = new HashMap<String, String>();
-		
-		parametrosValores.put("--param1", "valor1");
-		parametrosValores.put("--param2", "\"valor2 com detalhes\"");
-		parametrosValores.put("--param3", "\"valor3 @\"com@\" detalhes\"");
+		Map<String, List<String>> parametrosValores = this.getMapaParametrosValores();
 		ExpressaoUsuarioParametrosValores expressao4 = new ExpressaoUsuarioParametrosValores(comando, parametrosValores);
 		assertDoesNotThrow(() -> this.gerenciador.executar(expressao4));
+	}
+	
+	private Map<String, List<String>> getMapaParametrosValores() {
+		Map<String, List<String>> parametrosValores = new HashMap<String, List<String>>();	
+		parametrosValores.put("--param1", Arrays.asList("valor1"));
+		parametrosValores.put("--param2", Arrays.asList("\"valor2 com detalhes\""));
+		parametrosValores.put("--param3", Arrays.asList("\"valor3 @\"com@\" detalhes\""));
+		return parametrosValores;
 	}
 	
 	@Test
@@ -65,11 +69,7 @@ class GerenciadorVerificacaoesExpressaoUsuarioTest {
 		ExpressaoUsuarioValores expressao3 = new ExpressaoUsuarioValores(comando, valores);
 		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.executar(expressao3));
 		
-		Map<String, String> parametrosValores = new HashMap<String, String>();
-		
-		parametrosValores.put("--param1", "valor1");
-		parametrosValores.put("--param2", "\"valor2 com detalhes\"");
-		parametrosValores.put("--param3", "\"valor3 @\"com@\" detalhes\"");
+		Map<String, List<String>> parametrosValores = this.getMapaParametrosValores();
 		ExpressaoUsuarioParametrosValores expressao4 = new ExpressaoUsuarioParametrosValores(comando, parametrosValores);
 		assertThrows(ExpressaoInvalidaException.class, () -> this.gerenciador.executar(expressao4));
 	}
