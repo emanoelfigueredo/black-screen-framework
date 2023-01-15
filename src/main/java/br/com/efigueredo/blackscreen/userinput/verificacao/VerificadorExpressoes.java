@@ -1,6 +1,6 @@
 package br.com.efigueredo.blackscreen.userinput.verificacao;
 
-import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
+import br.com.efigueredo.blackscreen.userinput.ExpressaoUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
 
 /**
@@ -39,9 +39,9 @@ public class VerificadorExpressoes {
 	 *                                         nas verificações será lançado uma
 	 *                                         sub-exceção representando o erro.
 	 */
-	public void executarVerificacao(EntradaUsuario entradaUsuario) throws EntradaUsuarioInvalidaException {
+	public void executarVerificacao(ExpressaoUsuario expressao) throws EntradaUsuarioInvalidaException {
 		VerificacaoExpressaoUsuario chain = this.configuracao.getChainVerificacaoExpressaoUsuario();
-		chain.verificar(entradaUsuario);
+		chain.verificar(expressao);
 	}
 
 }

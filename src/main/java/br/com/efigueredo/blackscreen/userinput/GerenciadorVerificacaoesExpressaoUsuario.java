@@ -46,10 +46,10 @@ public class GerenciadorVerificacaoesExpressaoUsuario {
 	 *                                         será lançado uma sub-exceção
 	 *                                         representando o erro.
 	 */
-	public void executar(EntradaUsuario entrada) throws EntradaUsuarioInvalidaException {
+	public void executar(ExpressaoUsuario expressao) throws EntradaUsuarioInvalidaException {
 		ConfiguracaoVerificacoes configuracao = this.getObjetoConfiguracaoDeVerificacoes();
 		VerificadorExpressoes verificador = this.getVerificadorExpressoes(configuracao);
-		verificador.executarVerificacao(entrada);
+		verificador.executarVerificacao(expressao);
 	}
 
 }

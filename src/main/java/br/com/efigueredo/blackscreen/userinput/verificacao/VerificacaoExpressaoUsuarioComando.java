@@ -1,6 +1,6 @@
 package br.com.efigueredo.blackscreen.userinput.verificacao;
 
-import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
+import br.com.efigueredo.blackscreen.userinput.ExpressaoUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.CampoComandoInvalidoExpception;
 import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
 
@@ -43,8 +43,8 @@ public class VerificacaoExpressaoUsuarioComando extends VerificacaoExpressaoUsua
 	 *         com o prefixo "--"</u></em>.
 	 */
 	@Override
-	protected boolean verificacao(EntradaUsuario entrada) {
-		return entrada.getComando().startsWith("--");
+	protected boolean verificacao(ExpressaoUsuario expressao) {
+		return expressao.getComando().startsWith("--");
 	}
 
 	/**

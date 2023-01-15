@@ -1,6 +1,6 @@
 package br.com.efigueredo.blackscreen.userinput.verificacao;
 
-import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
+import br.com.efigueredo.blackscreen.userinput.ExpressaoUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
 
 /**
@@ -39,7 +39,7 @@ public abstract class VerificacaoExpressaoUsuario {
 	 *         expressão.<br>
 	 *         <b>false</b>, se a característica <em>foi atentida</em> na expressão.
 	 */
-	protected abstract boolean verificacao(EntradaUsuario entrada);
+	protected abstract boolean verificacao(ExpressaoUsuario expressao);
 
 	/**
 	 * Método abstrato responsável por escpecificar que uma exceção do tipo
@@ -66,12 +66,12 @@ public abstract class VerificacaoExpressaoUsuario {
 	 *                                         {@code verificacao} retorne o valor
 	 *                                         true.
 	 */
-	public void verificar(EntradaUsuario entrada) throws EntradaUsuarioInvalidaException {
-		if (this.verificacao(entrada)) {
+	public void verificar(ExpressaoUsuario expressao) throws EntradaUsuarioInvalidaException {
+		if (this.verificacao(expressao)) {
 			this.jogarExcecao();
 			return;
 		}
-		this.proximo.verificar(entrada);
+		this.proximo.verificar(expressao);
 	}
 
 }

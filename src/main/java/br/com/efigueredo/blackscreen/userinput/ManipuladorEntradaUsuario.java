@@ -1,5 +1,10 @@
 package br.com.efigueredo.blackscreen.userinput;
 
+import java.util.List;
+import java.util.Map;
+
+import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
+
 /**
  * <h4>Classe responsável por manipular uma expressão inserida no sistema pelo
  * usuário.</h4>
@@ -8,6 +13,14 @@ package br.com.efigueredo.blackscreen.userinput;
  * @since 1.0.0
  */
 public class ManipuladorEntradaUsuario {
+	
+	private ManipuladorExpressaoParametrosEValores manipuladorParametrosValores;
+	private ManipuladorExpressaoSomenteValores manipuladorSomenteValores;
+	
+	public ManipuladorEntradaUsuario() {
+		this.manipuladorSomenteValores = new ManipuladorExpressaoSomenteValores();
+		this.manipuladorParametrosValores = new ManipuladorExpressaoParametrosEValores();
+	}
 
 	/**
 	 * Método responsável por extrair o comando da expressão passada pelo usuário ao
@@ -23,7 +36,13 @@ public class ManipuladorEntradaUsuario {
 	public String extrairComando(String expressao) {
 		return expressao.split(" ")[0];
 	}
-
 	
+	public Map<String, String> extrairParametrosEValores(String expressao) {
+		return this.manipuladorParametrosValores.extrairParametrosEValores(expressao);
+	}
+
+	public List<String> extrairValoresExpressaoSemParametros(String expressao) throws ExpressaoInvalidaException {
+		return this.manipuladorSomenteValores.extrairValores(expressao);
+	}
 
 }
