@@ -1,190 +1,270 @@
 package br.com.efigueredo.blackscreen.comandos.metodos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import br.com.efigueredo.blackscreen.comandos.metodos.exception.ComandoInvalidoException;
+import br.com.efigueredo.blackscreen.comandos.metodos.exception.ControladorException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.NomeComandoInexistenteException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ParametroDeComandoInexistenteException;
+import br.com.efigueredo.blackscreen.comandos.metodos.exception.SemComandoCorrespondenteException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.SolicitacaoDeMetodoComandoInexistenteException;
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ValoresIncoerentesComOsComandosExistentesException;
-import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControlador4;
-import br.com.efigueredo.blackscreen.sistema.AplicacaoBlackScreen;
-import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControlador1;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosParametrosValoresIncorretosParametrosNaoAnotados;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValores;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValoresIncorretos2ListasValores;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValoresIncorretosDoisParametrosListas;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValoresIncorretosSemMetodoQueAtendam;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorSemMetodos;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorSemMetodosComando;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioParametrosValores;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioValores;
 
 @Tag("integracao")
 class GerenciadorComandoControladorTest {
 
-	private AplicacaoBlackScreen sistema;
-	private GerenciadorComandoControlador gerenciador;
+	private GerenciadorComandoControlador gerenciador = new GerenciadorComandoControlador();;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		this.sistema = new AplicacaoBlackScreen(PrototipoControlador4.class, null);
-		this.gerenciador = new GerenciadorComandoControlador();
+	@Test
+	public void deveriaRetornarTodosMetodos_ComONomeDeComandoCorrespondente()
+			throws NoSuchMethodException, SecurityException, ControladorException, ComandoInvalidoException {
+		List<Method> metodosComando = this.gerenciador.getMetodosAnotadosComParametroNomeCorrespondente("cmd1",
+				PrototipoControlador1.class);
+		Method metodo1 = PrototipoControlador1.class.getMethod("metodo1");
+		Method metodo2 = PrototipoControlador1.class.getMethod("metodo5");
+		assertTrue(metodosComando.size() == 2);
+		assertTrue(metodosComando.contains(metodo1));
+		assertTrue(metodosComando.contains(metodo2));
 	}
 
 	@Test
-	public void deveriaRetornarTodosOsMetodosAnotadosComArrobaComandoDoPrototipoControlador4_TalQueNomeDaAnotacaoSejaAtualizar()
-			throws NoSuchMethodException, SecurityException, NomeComandoInexistenteException {
-		List<Method> metodos = this.gerenciador.getMetodosAnotadosComParametroNomeCorrespondente("atualizar");
-		assertTrue(metodos.contains(PrototipoControlador4.class.getDeclaredMethod("metodo3", String.class)));
-		assertTrue(metodos.contains(PrototipoControlador4.class.getDeclaredMethod("metodo4", String.class)));
-		assertTrue(metodos.contains(PrototipoControlador4.class.getDeclaredMethod("metodo6")));
-		assertFalse(metodos.contains(PrototipoControlador4.class.getDeclaredMethod("metodo1")));
-		assertFalse(metodos.contains(PrototipoControlador4.class.getDeclaredMethod("metodo2")));
-		assertFalse(metodos.contains(PrototipoControlador4.class.getDeclaredMethod("metodo5")));
+	public void deveriaLancarExececao_QuandoClasseControladoraNaoTiverMetodos()
+			throws NoSuchMethodException, SecurityException, ControladorException, ComandoInvalidoException {
+		assertThrows(ControladorException.class,
+				() -> this.gerenciador.getMetodosAnotadosComParametroNomeCorrespondente("cmd1",
+						PrototipoControladorSemMetodos.class),
+				"O controlador atual + [" + PrototipoControladorSemMetodos.class + "] não possui nenhum método.");
 	}
 
 	@Test
-	public void deveriaJogarExcecao_QuandoMetodosAnotadosNaoTeremNomeComandoCorrespondenteNaAnotacao() {
-		try {
-			assertThrows(NomeComandoInexistenteException.class, () -> this.gerenciador
-					.getMetodosAnotadosComParametroNomeCorrespondente("nome_comando_inexistente"));
-		} catch (Exception e) {
-		}
+	public void deveriaLancarExececao_QuandoClasseControladoraNaoTiverMetodosDeComando()
+			throws NoSuchMethodException, SecurityException, ControladorException, ComandoInvalidoException {
+		assertThrows(ControladorException.class,
+				() -> this.gerenciador.getMetodosAnotadosComParametroNomeCorrespondente("cmd1",
+						PrototipoControladorSemMetodosComando.class),
+				"O controlador atual + [" + PrototipoControladorSemMetodosComando.class
+						+ "] não possui nenhum método anotado com @Comando");
 	}
 
 	@Test
-	public void deveriaRetornarMetodosAnotadosComOValorParametroDaAnotacaoCorrespondente()
-			throws NomeComandoInexistenteException, NoSuchMethodException, SecurityException,
-			ParametroDeComandoInexistenteException {
-		EntradaUsuario entradaUsuario = new EntradaUsuario("atualizar", Arrays.asList("--nome"), Arrays.asList("any"));
-		List<Method> metodos = this.gerenciador
-				.getMetodosAnotadosComParametroNomeCorrespondente(entradaUsuario.getComando());
-		List<Method> resultado = this.gerenciador.getMetodosAnotadosComValorParametroCorrespondente(metodos,
-				entradaUsuario.getParametros());
-		assertEquals(1, resultado.size());
-		assertTrue(resultado.contains(PrototipoControlador4.class.getDeclaredMethod("metodo3", String.class)));
-	}
-
-	@Test
-	public void deveriaRetornarOsMetodosSemParametrosDeComando_QuandoNaoHouverParametrosDeComandoNaEntradaUsuario()
-			throws NomeComandoInexistenteException, NoSuchMethodException, SecurityException,
-			ParametroDeComandoInexistenteException {
-		EntradaUsuario entradaUsuario = new EntradaUsuario("atualizar", Arrays.asList(), Arrays.asList("any"));
-		List<Method> metodos = this.gerenciador
-				.getMetodosAnotadosComParametroNomeCorrespondente(entradaUsuario.getComando());
-		List<Method> resultado = this.gerenciador.getMetodosAnotadosComValorParametroCorrespondente(metodos,
-				entradaUsuario.getParametros());
-		assertTrue(resultado.size() == 1);
-		assertEquals(PrototipoControlador4.class.getMethod("metodo6").getName(), resultado.get(0).getName());
-	}
-
-	@Test
-	public void deveriaJogarExecao_QuandoHouverParametroDeComandoNaEntradaUsuario_EOParametroNaoForEncontradoNosMetodosAnotados()
-			throws NomeComandoInexistenteException, NoSuchMethodException, SecurityException,
-			ParametroDeComandoInexistenteException {
-		try {
-			EntradaUsuario entradaUsuario = new EntradaUsuario("atualizar", Arrays.asList("--param_inexistente"),
-					Arrays.asList("any"));
-			List<Method> metodos = this.gerenciador
-					.getMetodosAnotadosComParametroNomeCorrespondente(entradaUsuario.getComando());
-			assertThrows(ParametroDeComandoInexistenteException.class, () -> this.gerenciador
-					.getMetodosAnotadosComValorParametroCorrespondente(metodos, entradaUsuario.getParametros()));
-
-		} catch (Exception e) {
-		}
-	}
-
-	@Test
-	public void deveriaRetornarMetodosComParametrosCorrespondentesAosValoresDaEntradaUsuario()
-			throws ParametroDeComandoInexistenteException, NomeComandoInexistenteException, NoSuchMethodException,
-			SecurityException, ValoresIncoerentesComOsComandosExistentesException,
-			SolicitacaoDeMetodoComandoInexistenteException {
-		EntradaUsuario entradaUsuario = new EntradaUsuario("listar", Arrays.asList("--all"), Arrays.asList("valor1"));
-		List<Method> metodos = this.gerenciador
-				.getMetodosAnotadosComParametroNomeCorrespondente(entradaUsuario.getComando());
-		metodos = this.gerenciador.getMetodosPorTiposParametros(metodos, entradaUsuario.getClassesDosValores());
-		List<Method> resultado = this.gerenciador.getMetodosAnotadosComValorParametroCorrespondente(metodos,
-				entradaUsuario.getParametros());
-		assertEquals(1, resultado.size());
-		assertTrue(resultado.contains(PrototipoControlador4.class.getDeclaredMethod("metodo7", String.class)));
-	}
-
-	@Test
-	public void deveriaRetornarMetodosSemParametros_QuandoNaoHouverValoresNaEntradaUsuario()
-			throws NomeComandoInexistenteException, NoSuchMethodException, SecurityException,
-			ParametroDeComandoInexistenteException, ValoresIncoerentesComOsComandosExistentesException,
-			SolicitacaoDeMetodoComandoInexistenteException {
-		EntradaUsuario entradaUsuario = new EntradaUsuario("listar", Arrays.asList("--all"), Arrays.asList());
-		List<Method> metodos = this.gerenciador
-				.getMetodosAnotadosComParametroNomeCorrespondente(entradaUsuario.getComando());
-		metodos = this.gerenciador.getMetodosPorTiposParametros(metodos, entradaUsuario.getClassesDosValores());
-		List<Method> resultado = this.gerenciador.getMetodosAnotadosComValorParametroCorrespondente(metodos,
-				entradaUsuario.getParametros());
-		assertEquals(1, resultado.size());
-		assertTrue(resultado.contains(PrototipoControlador4.class.getDeclaredMethod("metodo8")));
-	}
-
-	@Test
-	public void deveriaLancarExcecao_QuandoNaoHouverMetodoCorrespondenteAosValoresInseridosNaEntradaUsuario()
-			throws NomeComandoInexistenteException, NoSuchMethodException, SecurityException,
-			ParametroDeComandoInexistenteException {
-		try {
-			EntradaUsuario entradaUsuario = new EntradaUsuario("listar", Arrays.asList("--all"),
-					Arrays.asList("valor1", "valor2", "valor3"));
-			List<Method> metodos = this.gerenciador
-					.getMetodosAnotadosComParametroNomeCorrespondente(entradaUsuario.getComando());
-			List<Method> resultado = this.gerenciador.getMetodosAnotadosComValorParametroCorrespondente(metodos,
-					entradaUsuario.getParametros());
-			assertThrows(ValoresIncoerentesComOsComandosExistentesException.class, () -> this.gerenciador
-					.getMetodosPorTiposParametros(resultado, entradaUsuario.getClassesDosValores()));
-		} catch (Exception e) {
-		}
-	}
-
-	@Test
-	public void dadoAEntradaDoUsuario_DeveriaRetornarOMetodoCorrespondenteAoSeuComando() throws NoSuchMethodException,
+	public void deveriaRetornarOComandoAdequado_ParaExpressoesSomenteComValores() throws NoSuchMethodException,
 			SecurityException, NomeComandoInexistenteException, ParametroDeComandoInexistenteException,
-			ValoresIncoerentesComOsComandosExistentesException, SolicitacaoDeMetodoComandoInexistenteException {
-		EntradaUsuario entradaUsuario1 = new EntradaUsuario("atualizar", Arrays.asList("--nome"),
-				Arrays.asList("nome"));
-		Method comando1 = this.gerenciador.getMetodoComando(entradaUsuario1);
-		assertTrue(comando1.equals(PrototipoControlador4.class.getDeclaredMethod("metodo3", String.class)));
+			ValoresIncoerentesComOsComandosExistentesException, SolicitacaoDeMetodoComandoInexistenteException,
+			ComandoInvalidoException, SemComandoCorrespondenteException, ControladorException {
+		// Comando com lista de valores vazia
+		List<String> valores = Arrays.asList();
+		ExpressaoUsuarioValores expressao = new ExpressaoUsuarioValores("adicionar", valores);
+		Method metodoEsperado = PrototipoControladorComandosSoValores.class.getMethod("metodo1");
+		Method metodoEncontrado = this.gerenciador.getMetodoComando(expressao,
+				PrototipoControladorComandosSoValores.class);
+		assertEquals(metodoEsperado, metodoEncontrado);
 
-		EntradaUsuario entradaUsuario2 = new EntradaUsuario("atualizar", Arrays.asList("-n"), Arrays.asList("id"));
-		Method comando2 = this.gerenciador.getMetodoComando(entradaUsuario2);
-		assertTrue(comando2.equals(PrototipoControlador4.class.getDeclaredMethod("metodo3", String.class)));
+		// Comando com lista contendo somente um valor
+		List<String> valores2 = Arrays.asList("valor1");
+		ExpressaoUsuarioValores expressao2 = new ExpressaoUsuarioValores("adicionar", valores2);
+		Method metodoEsperado2 = PrototipoControladorComandosSoValores.class.getMethod("metodo2", String.class);
+		Method metodoEncontrado2 = this.gerenciador.getMetodoComando(expressao2,
+				PrototipoControladorComandosSoValores.class);
+		assertEquals(metodoEsperado2, metodoEncontrado2);
 
-		EntradaUsuario entradaUsuario3 = new EntradaUsuario("atualizar", Arrays.asList("--id"), Arrays.asList("id"));
-		Method comando3 = this.gerenciador.getMetodoComando(entradaUsuario3);
-		assertTrue(comando3.equals(PrototipoControlador4.class.getDeclaredMethod("metodo4", String.class)));
+		// Comando com lista contendo dois valores
+		List<String> valores3 = Arrays.asList("valor1", "valor2");
+		ExpressaoUsuarioValores expressao3 = new ExpressaoUsuarioValores("adicionar", valores3);
+		Method metodoEsperado3 = PrototipoControladorComandosSoValores.class.getMethod("metodo3", String.class,
+				String.class);
+		Method metodoEncontrado3 = this.gerenciador.getMetodoComando(expressao3,
+				PrototipoControladorComandosSoValores.class);
+		assertEquals(metodoEsperado3, metodoEncontrado3);
 
-		EntradaUsuario entradaUsuario4 = new EntradaUsuario("atualizar", Arrays.asList("-i"), Arrays.asList("id"));
-		Method comando4 = this.gerenciador.getMetodoComando(entradaUsuario4);
-		assertTrue(comando4.equals(PrototipoControlador4.class.getDeclaredMethod("metodo4", String.class)));
-
-		EntradaUsuario entradaUsuario5 = new EntradaUsuario("command5", Arrays.asList(), Arrays.asList());
-		Method comando5 = this.gerenciador.getMetodoComando(entradaUsuario5);
-		assertTrue(comando5.equals(PrototipoControlador4.class.getDeclaredMethod("metodo5")));
-
-		EntradaUsuario entradaUsuario6 = new EntradaUsuario("remove", Arrays.asList("-n"), Arrays.asList());
-		Method comando6 = this.gerenciador.getMetodoComando(entradaUsuario6);
-		assertTrue(comando6.equals(PrototipoControlador4.class.getDeclaredMethod("metodo2")));
-
-		EntradaUsuario entradaUsuario7 = new EntradaUsuario("remove", Arrays.asList(), Arrays.asList("valor1"));
-		Method comando7 = this.gerenciador.getMetodoComando(entradaUsuario7);
-		assertTrue(comando7.equals(PrototipoControlador4.class.getDeclaredMethod("metodo8", String.class)));
-
+		// Comando com lista contendo tres valores, não existe metodo que suporte 3
+		// valores, portanto, deve retornar o metodo
+		// que receba uma lista de valores se existir.
+		List<String> valores4 = Arrays.asList("valor1", "valor2", "valor3");
+		ExpressaoUsuarioValores expressao4 = new ExpressaoUsuarioValores("adicionar", valores4);
+		Method metodoEsperado4 = PrototipoControladorComandosSoValores.class.getMethod("metodo4", List.class);
+		Method metodoEncontrado4 = this.gerenciador.getMetodoComando(expressao4,
+				PrototipoControladorComandosSoValores.class);
+		assertEquals(metodoEsperado4, metodoEncontrado4);
 	}
 
 	@Test
-	public void deveriaLancarExcecao_QuandoComandoInseridoNaoTemOsValoresNecessariosParaAInvocacao()
-			throws NomeComandoInexistenteException, ParametroDeComandoInexistenteException,
-			ValoresIncoerentesComOsComandosExistentesException, SolicitacaoDeMetodoComandoInexistenteException {
-		EntradaUsuario entradaUsuario7 = new EntradaUsuario("metodo9", Arrays.asList(), Arrays.asList());
-		assertThrows(SolicitacaoDeMetodoComandoInexistenteException.class,
-				() -> this.gerenciador.getMetodoComando(entradaUsuario7));
+	public void deveriaLancarExcecao_QuandoMetodosComandoSomenteValores_EstiveremIncorretos()
+			throws NoSuchMethodException, SecurityException {
+		// Dois métodos com o mesmo nome de comando sem parâmetro que recebe somente uma
+		// lista de valores.
+		List<String> valores = Arrays.asList();
+		ExpressaoUsuarioValores expressao = new ExpressaoUsuarioValores("adicionar", valores);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao,
+						PrototipoControladorComandosSoValoresIncorretos2ListasValores.class),
+				"Existe mais de um comando com o nome " + expressao.getComando() + " que receba um List<String> "
+						+ "como único parâmetro. Só é possível que exista um comando com essa característica.");
+
+		// Dois métodos com o mesmo nome de comando sem parâmetro que recebe a mesma
+		// quantidade de parametros sem ser listas
+		List<String> valores2 = Arrays.asList("valor1");
+		ExpressaoUsuarioValores expressao2 = new ExpressaoUsuarioValores("adicionar", valores2);
+		List<Method> metodos = Arrays.asList(
+				PrototipoControladorComandosSoValoresIncorretos2MetodosMesmosParametros.class.getDeclaredMethods());
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao2,
+						PrototipoControladorComandosSoValoresIncorretos2MetodosMesmosParametros.class),
+				"Para o comando " + expressao.getComando()
+						+ " existe mais de um método que receba a quantidade de parâmetros inserida. Mantenha somente um.\nMétodos: "
+						+ metodos);
+
+		// Não existe métodos que possa atender aos valores inseridos
+		List<String> valores3 = Arrays.asList("valor1", "valor2");
+		ExpressaoUsuarioValores expressao3 = new ExpressaoUsuarioValores("adicionar", valores3);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao3,
+						PrototipoControladorComandosSoValoresIncorretosSemMetodoQueAtendam.class),
+				"Não existe comando que possa receber " + expressao.getValores().size()
+						+ " valor/es e nem comando que possa receber uma lista de valores na classe controladora ["
+						+ PrototipoControladorComandosSoValoresIncorretosSemMetodoQueAtendam.class + "].");
+
+		// Metodo que recebe dois parametros, onde os dois são uma lista de valores sem
+		// estarem anotadas como parâmetro de comando.
+		List<String> valores4 = Arrays.asList("valor1", "valor2");
+		ExpressaoUsuarioValores expressao4 = new ExpressaoUsuarioValores("adicionar", valores4);
+		Method metodo = PrototipoControladorComandosSoValoresIncorretosDoisParametrosListas.class.getMethod("metodo1",
+				List.class, List.class);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao4,
+						PrototipoControladorComandosSoValoresIncorretosDoisParametrosListas.class),
+				"O comando [" + metodo
+						+ "] não pode receber duas listas de valores sem estar anotado a um parâmetro de comando.");
+	}
+
+	@Test
+	public void deveriaRetornarMetodoAdequado_ParaExpressoesComParametrosEValores() throws NoSuchMethodException,
+			SecurityException, NomeComandoInexistenteException, ParametroDeComandoInexistenteException,
+			ValoresIncoerentesComOsComandosExistentesException, SolicitacaoDeMetodoComandoInexistenteException,
+			ComandoInvalidoException, SemComandoCorrespondenteException, ControladorException {
+		// Metodo que recebe valores unicos
+		Map<String, List<String>> parametrosValores = new HashMap<>();
+		parametrosValores.put("--param1", Arrays.asList("valor1"));
+		parametrosValores.put("--param2", Arrays.asList("valor1"));
+		ExpressaoUsuarioParametrosValores expressao = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores);
+		Method metodoEsperado = PrototipoControladorComandosParametrosValores.class.getMethod("metodo1", String.class,
+				String.class);
+		Method metodoEncontrado = this.gerenciador.getMetodoComando(expressao,
+				PrototipoControladorComandosParametrosValores.class);
+		assertEquals(metodoEsperado, metodoEncontrado);
+
+		// Metodo que recebe mais de um valor por parametro.
+		Map<String, List<String>> parametrosValores2 = new HashMap<>();
+		parametrosValores2.put("--param1", Arrays.asList("valor1"));
+		parametrosValores2.put("--param2", Arrays.asList("valor1", "valor2"));
+		ExpressaoUsuarioParametrosValores expressao2 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores2);
+		Method metodoEsperado2 = PrototipoControladorComandosParametrosValores.class.getMethod("metodo2", String.class,
+				List.class);
+		Method metodoEncontrado2 = this.gerenciador.getMetodoComando(expressao2,
+				PrototipoControladorComandosParametrosValores.class);
+		assertEquals(metodoEsperado2, metodoEncontrado2);
+
+		// Metodo que recebe mais de um valor por parametro.
+		Map<String, List<String>> parametrosValores3 = new HashMap<>();
+		parametrosValores3.put("--param1", Arrays.asList("valor1", "valor2", "valor3"));
+		parametrosValores3.put("--param2", Arrays.asList("valor1", "valor2"));
+		ExpressaoUsuarioParametrosValores expressao3 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores3);
+		Method metodoEsperado3 = PrototipoControladorComandosParametrosValores.class.getMethod("metodo3", List.class,
+				List.class);
+		Method metodoEncontrado3 = this.gerenciador.getMetodoComando(expressao3,
+				PrototipoControladorComandosParametrosValores.class);
+		assertEquals(metodoEsperado3, metodoEncontrado3);
+
+		// Metodo que recebe mais de um valor por parametro.
+		Map<String, List<String>> parametrosValores4 = new HashMap<>();
+		parametrosValores4.put("--param1", Arrays.asList("valor1", "valor2", "valor3"));
+		parametrosValores4.put("--param2", Arrays.asList("valor1", "valor2"));
+		parametrosValores4.put("--param3", Arrays.asList("valor1", "valor2", "valor3", "valor4"));
+		ExpressaoUsuarioParametrosValores expressao4 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores4);
+		Method metodoEsperado4 = PrototipoControladorComandosParametrosValores.class.getMethod("metodo4", List.class,
+				List.class, List.class);
+		Method metodoEncontrado4 = this.gerenciador.getMetodoComando(expressao4,
+				PrototipoControladorComandosParametrosValores.class);
+		assertEquals(metodoEsperado4, metodoEncontrado4);
+	}
+
+	@Test
+	public void deveriaLancarExcecao_DadasAsSituacoes_QuandoObterComandoDeExpressaoComParametrosEValores()
+			throws NoSuchMethodException, SecurityException, NomeComandoInexistenteException, ParametroDeComandoInexistenteException, ValoresIncoerentesComOsComandosExistentesException, SolicitacaoDeMetodoComandoInexistenteException, ComandoInvalidoException, SemComandoCorrespondenteException, ControladorException {
+		// Quando os métodos não possuem todos os parametros anotados
+		ExpressaoUsuarioParametrosValores expressao4 = new ExpressaoUsuarioParametrosValores("adicionar", null);
+		Method metodo = PrototipoControladorComandosParametrosValoresIncorretosParametrosNaoAnotados.class
+				.getMethod("metodo4", List.class, List.class, List.class);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao4,
+						PrototipoControladorComandosParametrosValoresIncorretosParametrosNaoAnotados.class),
+				"O comando [" + metodo + "] não possui todos os parâmetros anotados com @Parametro.");
+
+		// Não existe metodos de parametros de comando na classe controladora
+		Map<String, List<String>> parametrosValores5 = new HashMap<>();
+		parametrosValores5.put("--param1", Arrays.asList("valor1", "valor2", "valor3"));
+		ExpressaoUsuarioParametrosValores expressao5 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores5);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao5, PrototipoControladorComandosSoValores.class),
+				"Não existe comando com parâmetros na classe controladora.");
+		
+		// Não existe métodos com todos os nomes de parâmetros correspondentes
+		Map<String, List<String>> parametrosValores6 = new HashMap<>();
+		parametrosValores6.put("--desconhecido1", Arrays.asList("valor1", "valor2", "valor3"));
+		parametrosValores6.put("--desconhecido2", Arrays.asList("valor1", "valor2", "valor3"));
+		ExpressaoUsuarioParametrosValores expressao6 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores6);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao6, PrototipoControladorComandosParametrosValores.class),
+				"Os comandos correspondentes não possuem os parâmetros inseridos.\nParâmetros: "
+						+ expressao6.getParametrosValores().keySet());
+		
+		// Não existe métodos que suportem receber a quantidae de valores inserida
+		Map<String, List<String>> parametrosValores7 = new HashMap<>();
+		parametrosValores7.put("--param1", Arrays.asList("valor1"));
+		parametrosValores7.put("--param2", Arrays.asList("valor1"));
+		parametrosValores7.put("--param3", Arrays.asList("valor1"));
+		parametrosValores7.put("--param4", Arrays.asList("valor1", "valor2", "valor3"));
+		ExpressaoUsuarioParametrosValores expressao7 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores7);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao7, PrototipoControladorComandosParametrosValores.class));
+		
+		// Existem métodos de parametros de comando iguais no controlador
+		Map<String, List<String>> parametrosValores8 = new HashMap<>();
+		parametrosValores8.put("--param1", Arrays.asList("valor1"));
+		parametrosValores8.put("--param2", Arrays.asList("valor1", "valor2", "valor3"));
+		parametrosValores8.put("--param3", Arrays.asList("valor1", "valor2", "valor3"));
+		ExpressaoUsuarioParametrosValores expressao8 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores8);
+		assertThrows(ComandoInvalidoException.class,
+				() -> this.gerenciador.getMetodoComando(expressao8, PrototipoControladorComandosParametrosValores.class));
+		
 	}
 
 }

@@ -22,6 +22,7 @@ public class PrototipoControlador1 {
 
 	}
 
+	@Comando(nome = "cmd1")
 	public void metodo5() {
 
 	}

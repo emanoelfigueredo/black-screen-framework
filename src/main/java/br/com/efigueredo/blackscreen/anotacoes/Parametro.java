@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 @Target(PARAMETER)
 public @interface Parametro {
 	
-	public String nome();
+	public String value();
 
 }
