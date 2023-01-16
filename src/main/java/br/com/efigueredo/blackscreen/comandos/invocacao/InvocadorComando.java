@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComandoInterrompidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
 import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
@@ -50,7 +51,7 @@ public class InvocadorComando {
 	 *                                               trace.
 	 * @throws ContainerIocException                 Erro no container Ioc.
 	 */
-	public void invocarComando(Class<?> controlador, Method metodoComando, List<String> valores)
+	public void invocarComando(Class<?> controlador, Method metodoComando, ExpressaoUsuario expressao)
 			throws InvocacaoComandoInterrompidaException, ContainerIocException {
 		Object objetoControlador = this.intanciadorControlador.intanciarControlador(controlador);
 		this.invocadorMetodo.invocar(objetoControlador, metodoComando, valores);

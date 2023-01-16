@@ -49,6 +49,26 @@ public class GerenciadorEntradaUsuario {
 		this.manipulador = new ManipuladorEntradaUsuario();
 		this.gerenciadorVerificacoes = new GerenciadorVerificacaoesExpressaoUsuario();
 	}
+	
+	/**
+	 * Método responsável por construir o objeto {@linkplain EntradaUsuario}.
+	 * 
+	 * Ele executa todas as partes necessárias para que o objeto seja passado a
+	 * frente no sistema.
+	 *
+	 * @return EntradaUsuario Objeto {@linkplain EntradaUsuario}.
+	 * @throws EntradaUsuarioInvalidaException Se algum dos parâmetros para a
+	 *                                         expressão do comando não for atendida
+	 *                                         será lançado uma sub-exceção
+	 *                                         representando o erro.
+	 * @throws ExpressaoInvalidaException 
+	 */
+	public ExpressaoUsuario obterExpressaoUsuario() throws ExpressaoInvalidaException {
+		String expressao = this.receberExpressao();
+		ExpressaoUsuario entrada = this.manipularExpressao(expressao);
+		this.executarVerificacoesExpressao(entrada);
+		return entrada;
+	}
 
 	/**
 	 * Obtenha a expressão inserida pelo usuário.
@@ -90,26 +110,6 @@ public class GerenciadorEntradaUsuario {
 	 */
 	public void executarVerificacoesExpressao(ExpressaoUsuario expressaoUsuario) throws ExpressaoInvalidaException {
 		this.gerenciadorVerificacoes.executar(expressaoUsuario);
-	}
-
-	/**
-	 * Método responsável por construir o objeto {@linkplain EntradaUsuario}.
-	 * 
-	 * Ele executa todas as partes necessárias para que o objeto seja passado a
-	 * frente no sistema.
-	 *
-	 * @return EntradaUsuario Objeto {@linkplain EntradaUsuario}.
-	 * @throws EntradaUsuarioInvalidaException Se algum dos parâmetros para a
-	 *                                         expressão do comando não for atendida
-	 *                                         será lançado uma sub-exceção
-	 *                                         representando o erro.
-	 * @throws ExpressaoInvalidaException 
-	 */
-	public ExpressaoUsuario obterExpressaoUsuario() throws ExpressaoInvalidaException {
-		String expressao = this.receberExpressao();
-		ExpressaoUsuario entrada = this.manipularExpressao(expressao);
-		this.executarVerificacoesExpressao(entrada);
-		return entrada;
 	}
 
 }

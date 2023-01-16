@@ -6,21 +6,18 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
-import br.com.efigueredo.blackscreen.anotacoes.Comando;
 import br.com.efigueredo.blackscreen.comandos.invocacao.InvocadorComando;
 import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComandoInterrompidaException;
 import br.com.efigueredo.blackscreen.comandos.metodos.GerenciadorComandoControlador;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.NomeComandoInexistenteException;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.ParametroDeComandoInexistenteException;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.SolicitacaoDeMetodoComandoInexistenteException;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.ValoresIncoerentesComOsComandosExistentesException;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.RespostasSistema;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.RespostasSistemaFactory;
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
+import br.com.efigueredo.blackscreen.sistema.exception.BlackStreenException;
 import br.com.efigueredo.blackscreen.sistema.exception.ControladorAtualInexistenteException;
 import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
 import br.com.efigueredo.blackscreen.userinput.GerenciadorEntradaUsuario;
-import br.com.efigueredo.blackscreen.userinput.exception.EntradaUsuarioInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
 import br.com.efigueredo.container.ContainerIoc;
 import br.com.efigueredo.container.exception.ContainerIocException;
 
@@ -33,37 +30,13 @@ import br.com.efigueredo.container.exception.ContainerIocException;
  */
 public class AplicacaoBlackScreen {
 
-	/**
-	 * Objeto {@linkplain Class} estático que representa a classe controladora
-	 * atual. Nela deve ter ao menos um método anotado com {@linkplain Comando}.
-	 */
-	private static Class<?> controladorAtual;
-
-	/**
-	 * Objeto {@linkplain ContainerIoc} estático responsável pela inversão de
-	 * controle e injeção de dependências. Deve ser acessado pelas outras classes.
-	 */
-	private static ContainerIoc containerIoc;
-
-	/**
-	 * Objeto responsável por gerenciar todos os procedimentos necessários para
-	 * obtermos a entrada do usuário.
-	 */
-	private GerenciadorEntradaUsuario gerenteEntrada;
-
-	/**
-	 * Objeto responsável pro gerenciar os comandos da classe constroladora atual.
-	 */
-	private GerenciadorComandoControlador gerenteMetodos;
-
-	/** Objeto responsável por invocar os métodos de comandos. */
-	private InvocadorComando invocadorComandos;
-
-	/** Objeto responsável pelas respostas do sistema. */
-	private static RespostasSistema respostasSistema;
-
-	/** O pacote raiz do projeto. */
 	private String pacoteRaizProjeto;
+	private static Class<?> controladorAtual;
+	private static ContainerIoc containerIoc;
+	private static RespostasSistema respostasSistema;
+	private GerenciadorEntradaUsuario gerenteEntrada;
+	private GerenciadorComandoControlador gerenteComandos;
+	private InvocadorComando invocadorComandos;	
 
 	/**
 	 * Construtor.
@@ -92,7 +65,7 @@ public class AplicacaoBlackScreen {
 				new TypeAnnotationsScanner());
 		AplicacaoBlackScreen.controladorAtual = controladorInicial;
 		this.gerenteEntrada = new GerenciadorEntradaUsuario(reflections, this.pacoteRaizProjeto);
-		this.gerenteMetodos = new GerenciadorComandoControlador();
+		this.gerenteComandos = new GerenciadorComandoControlador();
 		this.invocadorComandos = new InvocadorComando(this.pacoteRaizProjeto);
 		AplicacaoBlackScreen.respostasSistema = new RespostasSistemaFactory().getRespostasSistema(reflections,
 				this.pacoteRaizProjeto);
@@ -114,19 +87,19 @@ public class AplicacaoBlackScreen {
 	public void executar(boolean habilitarComandoSair) throws ContainerIocException {
 		respostasSistema.imprimirBanner();
 		while (true) {
-			EntradaUsuario entradaUsuario = this.receberEntrada();
-			if (entradaUsuario == null) {
+			ExpressaoUsuario expressao = this.receberEntrada();
+			if (expressao == null) {
 				continue;
 			}
-			if (entradaUsuario.getComando().equals("")) {
+			if (expressao.getComando().equals("")) {
 				continue;
 			}
-			this.verificarComandoSair(habilitarComandoSair, entradaUsuario);
-			Method metodoComando = this.obterMetodoComando(entradaUsuario);
+			this.verificarComandoSair(habilitarComandoSair, expressao);
+			Method metodoComando = this.obterMetodoComando(expressao);
 			if (metodoComando == null) {
 				continue;
 			}
-			this.invocarMetodoComando(entradaUsuario, metodoComando);
+			this.invocarMetodoComando(expressao, metodoComando);
 		}
 	}
 
@@ -138,9 +111,9 @@ public class AplicacaoBlackScreen {
 	 *                             efetuada.
 	 * @param entradaUsuario       Entrada usuario com o comando inserido.
 	 */
-	private void verificarComandoSair(boolean habilitarComandoSair, EntradaUsuario entradaUsuario) {
+	private void verificarComandoSair(boolean habilitarComandoSair, ExpressaoUsuario expressao) {
 		if (habilitarComandoSair
-				&& (entradaUsuario.getComando().equals("sair") || entradaUsuario.getComando().equals("exit"))) {
+				&& (expressao.getComando().equals("sair") || expressao.getComando().equals("exit"))) {
 			respostasSistema.imprimirMensagem("Encerrando sistema");
 			System.exit(0);
 		}
@@ -157,12 +130,12 @@ public class AplicacaoBlackScreen {
 	 *         entrada expressão inserida.<br>
 	 *         null, caso uma exceção seja lançada.
 	 */
-	private EntradaUsuario receberEntrada() {
-		EntradaUsuario entradaUsuario = null;
+	private ExpressaoUsuario receberEntrada() {
+		ExpressaoUsuario entradaUsuario = null;
 		try {
-			entradaUsuario = this.gerenteEntrada.buildEntradaUsuario();
-		} catch (EntradaUsuarioInvalidaException e) {
-			respostasSistema.imprimirMensagemErro("Insira uma expressão válida");
+			entradaUsuario = this.gerenteEntrada.obterExpressaoUsuario();
+		} catch (ExpressaoInvalidaException e) {
+			respostasSistema.imprimirMensagemErro(e.getMessage());
 		}
 		return entradaUsuario;
 	}
@@ -176,20 +149,13 @@ public class AplicacaoBlackScreen {
 	 * @return Objeto {@linkplain Method} caso exista um método correspondente.<br>
 	 *         null, caso não exista.
 	 */
-	private Method obterMetodoComando(EntradaUsuario entradaUsuario) {
+	private Method obterMetodoComando(ExpressaoUsuario expressao) {
 		Method metodoComando = null;
 		try {
-			metodoComando = this.gerenteMetodos.getMetodoComando(entradaUsuario);
-		} catch (NomeComandoInexistenteException e) {
-			respostasSistema.imprimirMensagemErro("O comando " + entradaUsuario.getComando() + " não existe");
-		} catch (ParametroDeComandoInexistenteException e) {
-			respostasSistema.imprimirMensagemErro("O parâmetro de comando " + entradaUsuario.getParametros().get(0)
-					+ " não existe para o comando " + entradaUsuario.getComando());
-		} catch (ValoresIncoerentesComOsComandosExistentesException e) {
-			respostasSistema.imprimirMensagemErro("Os valores inseridos não podem ser aceitos pelo comando");
-		} catch (SolicitacaoDeMetodoComandoInexistenteException e) {
-			respostasSistema.imprimirMensagemErro("Não existe comando que corresponda ao formato inserido.");
-		}
+			metodoComando = this.gerenteComandos.getMetodoComando(expressao, AplicacaoBlackScreen.controladorAtual);
+		} catch (BlackStreenException e) {
+			respostasSistema.imprimirMensagemErro(e.getMessage());
+		} 
 		return metodoComando;
 	}
 
@@ -203,10 +169,10 @@ public class AplicacaoBlackScreen {
 	 *                       comando.
 	 * @throws ContainerIocException Erro no Container IoC.
 	 */
-	private void invocarMetodoComando(EntradaUsuario entradaUsuario, Method metodoComando)
+	private void invocarMetodoComando(ExpressaoUsuario expressao, Method metodoComando)
 			throws ContainerIocException {
 		try {
-			this.invocadorComandos.invocarComando(controladorAtual, metodoComando, entradaUsuario.getValores());
+			this.invocadorComandos.invocarComando(controladorAtual, metodoComando, expressao);
 		} catch (InvocacaoComandoInterrompidaException e) {
 			respostasSistema.imprimirMensagemErro("A invocação do comando foi interrompida");
 			e.printStackTrace();
