@@ -2,8 +2,13 @@ package br.com.efigueredo.blackscreen.comandos.invocacao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import br.com.efigueredo.blackscreen.anotacoes.Parametro;
 import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComandoInterrompidaException;
 
 /**
@@ -14,30 +19,37 @@ import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComan
  */
 public class InvocadorMetodo {
 
-	/**
-	 * Invoque o método de comando.
-	 * 
-	 * Seu funcionamento consiste em invocar o método com ou sem parâmetros.
-	 *
-	 * @param objetoControlador Instância da classe controladora que contém o
-	 *                          método.
-	 * @param metodoComando     Objeto {@linkplain Method} que representa o método
-	 *                          do comando.
-	 * @param valores           Lista de objetos necessários para preencher os
-	 *                          parâmetros do método.
-	 * @throws InvocacaoComandoInterrompidaException Ocorrerá se houver alguma falha
-	 *                                               na invocação do comando. A
-	 *                                               cuasa estára indicada na stack
-	 *                                               trace.
-	 */
-	public void invocar(Object objetoControlador, Method metodoComando, List<String> valores)
-			throws InvocacaoComandoInterrompidaException {
+	public void invocarComandoSemParametrosDeComando(Object objetoControlador, Method metodoComando,
+			List<String> valores) throws InvocacaoComandoInterrompidaException {
 		try {
-			if (valores.isEmpty()) {
-				metodoComando.invoke(objetoControlador);
-				return;
+			if (metodoComando.getParameterCount() == 1 && metodoComando.getParameters()[0].getType().equals(List.class)) {
+				metodoComando.invoke(objetoControlador, (List<String>) valores);
+			} else {
+				metodoComando.invoke(objetoControlador, valores.toArray());
 			}
-			metodoComando.invoke(objetoControlador, valores.toArray());
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new InvocacaoComandoInterrompidaException(
+					"A invocação do comando de método [" + metodoComando.getName() + "] foi interrompida.",
+					e.getCause());
+		}
+
+	}
+
+	public void invocarComandoComParametrosDeComando(Object objetoControlador, Method metodoComando,
+			Map<String, List<String>> parametrosValores) throws InvocacaoComandoInterrompidaException {
+		try {
+			List<Object> parametrosNaOrdem = new ArrayList<Object>();
+			List<Parameter> parametros = Arrays.asList(metodoComando.getParameters());
+			for (Parameter parametro : parametros) {
+				String nomeParametro = parametro.getAnnotation(Parametro.class).value();
+				List<String> valorParaOParametro = parametrosValores.get(nomeParametro);
+				if (valorParaOParametro.size() == 1) {
+					parametrosNaOrdem.add(valorParaOParametro.get(0));
+				} else {
+					parametrosNaOrdem.add((List<String>) valorParaOParametro);
+				}
+			}
+			metodoComando.invoke(objetoControlador, parametrosNaOrdem.toArray());
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new InvocacaoComandoInterrompidaException(
 					"A invocação do comando de método [" + metodoComando.getName() + "] foi interrompida.",

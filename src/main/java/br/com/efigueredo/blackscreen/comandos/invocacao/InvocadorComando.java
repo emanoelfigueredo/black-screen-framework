@@ -1,10 +1,11 @@
 package br.com.efigueredo.blackscreen.comandos.invocacao;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import br.com.efigueredo.blackscreen.comandos.invocacao.exception.InvocacaoComandoInterrompidaException;
 import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioParametrosValores;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioValores;
 import br.com.efigueredo.container.exception.ContainerIocException;
 
 /**
@@ -54,7 +55,12 @@ public class InvocadorComando {
 	public void invocarComando(Class<?> controlador, Method metodoComando, ExpressaoUsuario expressao)
 			throws InvocacaoComandoInterrompidaException, ContainerIocException {
 		Object objetoControlador = this.intanciadorControlador.intanciarControlador(controlador);
-		this.invocadorMetodo.invocar(objetoControlador, metodoComando, valores);
+		if(expressao instanceof ExpressaoUsuarioValores) {
+			ExpressaoUsuarioValores expressaoValores = (ExpressaoUsuarioValores) expressao;
+			this.invocadorMetodo.invocarComandoSemParametrosDeComando(objetoControlador, metodoComando, expressaoValores.getValores());
+		}
+		ExpressaoUsuarioParametrosValores expressaoParametrosValores = (ExpressaoUsuarioParametrosValores) expressao;
+		this.invocadorMetodo.invocarComandoComParametrosDeComando(objetoControlador, metodoComando, expressaoParametrosValores.getParametrosValores());
 	}
 
 }

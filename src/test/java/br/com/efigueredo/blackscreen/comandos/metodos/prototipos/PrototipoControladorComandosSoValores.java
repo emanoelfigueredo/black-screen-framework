@@ -23,7 +23,7 @@ public class PrototipoControladorComandosSoValores {
 	
 	@Comando(nome = "adicionar")
 	public void metodo4(List<String> args) {
-
+		
 	}
 
 }

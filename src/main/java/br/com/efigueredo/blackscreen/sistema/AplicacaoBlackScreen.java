@@ -14,7 +14,6 @@ import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.RespostasSi
 import br.com.efigueredo.blackscreen.sistema.configuracoes.respostas.exception.ConfiguracaoRespostaSistemaException;
 import br.com.efigueredo.blackscreen.sistema.exception.BlackStreenException;
 import br.com.efigueredo.blackscreen.sistema.exception.ControladorAtualInexistenteException;
-import br.com.efigueredo.blackscreen.userinput.EntradaUsuario;
 import br.com.efigueredo.blackscreen.userinput.GerenciadorEntradaUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
 import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;

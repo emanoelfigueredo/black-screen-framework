@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.comandos.metodos.prototipos;
+package br.com.efigueredo.blackscreen.comandos.invocacao;
 
 import java.util.List;
 
@@ -19,8 +19,7 @@ public class PrototipoControladorComandosParametrosValores {
 
 	@Comando(nome = "adicionar")
 	public void metodo3(@Parametro("--param1") List<String> args1, @Parametro("--param2") List<String> args2) {
-		System.out.println("param1 " + args1.size());
-		System.out.println("param2 " + args2.size());
+
 	}
 
 	@Comando(nome = "adicionar")
