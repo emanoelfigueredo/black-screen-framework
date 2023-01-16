@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.comandos.metodos;
+package br.com.efigueredo.blackscreen.comandos.metodos.manipuladores;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package br.com.efigueredo.blackscreen.comandos.metodos;
+package br.com.efigueredo.blackscreen.comandos.metodos.verificadores;
 
 import java.lang.reflect.Method;
 import java.util.List;

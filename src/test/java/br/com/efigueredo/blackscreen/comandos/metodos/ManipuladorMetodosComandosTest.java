@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import br.com.efigueredo.blackscreen.comandos.metodos.manipuladores.ManipuladorMetodosComandos;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControlador4;
 
 class ManipuladorMetodosComandosTest {
