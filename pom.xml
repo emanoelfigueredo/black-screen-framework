@@ -4,7 +4,6 @@
 	<artifactId>black-screen-framework</artifactId>
 	<version>1.0.1</version>
 	<name>BlackScreen</name>
-	<packaging>pom</packaging>
 	<description>Framework BlackScreen facilita o desenvolvimento de aplicações na linha de comando.</description>
 	<distributionManagement>
 		<repository>
@@ -113,9 +112,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<modules>
-		<module>entrada-usuario</module>
-		<module>sistema-blackscreen</module>
-		<module>comandos</module>
-	</modules>
 </project>
