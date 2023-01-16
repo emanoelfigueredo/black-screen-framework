@@ -1,6 +1,8 @@
 package br.com.efigueredo.blackscreen.comandos.metodos.exception;
 
-public class ControladorException extends Exception {
+import br.com.efigueredo.blackscreen.sistema.exception.BlackStreenException;
+
+public class ControladorException extends BlackStreenException {
 
 	/**
 	 * 

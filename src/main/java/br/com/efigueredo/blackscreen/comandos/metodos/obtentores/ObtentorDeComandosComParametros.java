@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.efigueredo.blackscreen.anotacoes.Parametro;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.ComandoInvalidoException;
 import br.com.efigueredo.blackscreen.comandos.metodos.manipuladores.ManipuladorDeMetodos;
 import br.com.efigueredo.blackscreen.comandos.metodos.manipuladores.ManipuladorMetodosComandos;
 import br.com.efigueredo.blackscreen.comandos.metodos.verificadores.VerificadorListaMetodos;
+import br.com.efigueredo.blackscreen.sistema.exception.BlackStreenException;
 import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioParametrosValores;
 
 public class ObtentorDeComandosComParametros {
@@ -24,7 +24,7 @@ public class ObtentorDeComandosComParametros {
 	}
 
 	public Method obterComandoComParametrosCorrespondentes(List<Method> metodos,
-			ExpressaoUsuarioParametrosValores expressaoUsuario) throws ComandoInvalidoException {
+			ExpressaoUsuarioParametrosValores expressaoUsuario) throws BlackStreenException {
 		List<Method> poolMetodos;
 		poolMetodos = this.extrairMetodosComParametrosAnotadosECorretos(metodos);
 		poolMetodos = this.extrairMetodosComQuantidadeDeParametrosCorrespondentes(poolMetodos, expressaoUsuario);
@@ -34,22 +34,22 @@ public class ObtentorDeComandosComParametros {
 	}
 
 	private List<Method> extrairMetodosPelasClassesDeSeusParametros(List<Method> metodos,
-			ExpressaoUsuarioParametrosValores expressaoUsuario) throws ComandoInvalidoException {
+			ExpressaoUsuarioParametrosValores expressaoUsuario) throws BlackStreenException {
 		metodos = this.manipuladorMetodosComando
 				.extrairMetodosFiltradosPelaCapacidadeDeValoresParaSeremInjetados(metodos, expressaoUsuario);
-		this.verificadorListas.lancarErroSeEstiverVazia(metodos,
+		this.verificadorListas.lancarErroComandoSeEstiverVazia(metodos,
 				"Os únicos comandos que possuem os parâmetros correpondetes não podem receber a quantidade de valores inserida.\nMétodos: "
 						+ metodos);
-		this.verificadorListas.lancarErroSeHouverMaisDeUmValor(metodos, "Comando iguais:\n" + metodos);
+		this.verificadorListas.lancarErroComandoSeHouverMaisDeUmValor(metodos, "Comando iguais:\n" + metodos);
 		return metodos;
 	}
 
 	private List<Method> extrairMetodosComNomesDeParametosCorrespondentes(List<Method> metodos,
-			ExpressaoUsuarioParametrosValores expressaoUsuario) throws ComandoInvalidoException {
+			ExpressaoUsuarioParametrosValores expressaoUsuario) throws BlackStreenException {
 		Set<String> nomesParametros = expressaoUsuario.getParametrosValores().keySet();
 		metodos = this.manipuladorMetodosComando
 				.extrairMetodosOndeSeusNomesDeParametrosCorrespondemAListaDeNomes(nomesParametros, metodos);
-		this.verificadorListas.lancarErroSeEstiverVazia(metodos,
+		this.verificadorListas.lancarErroComandoSeEstiverVazia(metodos,
 				"Os comandos correspondentes não possuem os parâmetros inseridos.\nParâmetros: " + nomesParametros);
 		return metodos;
 	}
@@ -61,9 +61,9 @@ public class ObtentorDeComandosComParametros {
 	}
 
 	private List<Method> extrairMetodosComParametrosAnotadosECorretos(List<Method> metodos)
-			throws ComandoInvalidoException {
+			throws BlackStreenException {
 		metodos = this.manipuladorMetodos.extrairMetodosOndeTodosOsParametrosEstaoAnotadosCom(Parametro.class, metodos);
-		this.verificadorListas.lancarErroSeEstiverVazia(metodos,
+		this.verificadorListas.lancarErroComandoSeEstiverVazia(metodos,
 				"Não existe comando com parâmetros na classe controladora.");
 		return metodos;
 	}

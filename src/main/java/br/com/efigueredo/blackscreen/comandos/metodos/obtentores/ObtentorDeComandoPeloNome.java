@@ -5,39 +5,49 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.efigueredo.blackscreen.anotacoes.Comando;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.ComandoInvalidoException;
-import br.com.efigueredo.blackscreen.comandos.metodos.exception.ControladorException;
 import br.com.efigueredo.blackscreen.comandos.metodos.manipuladores.ManipuladorMetodosComandos;
 import br.com.efigueredo.blackscreen.comandos.metodos.manipuladores.ManipuladorMetodosDaClasse;
+import br.com.efigueredo.blackscreen.comandos.metodos.verificadores.VerificadorListaMetodos;
+import br.com.efigueredo.blackscreen.sistema.exception.BlackStreenException;
 
 public class ObtentorDeComandoPeloNome {
 
 	private ManipuladorMetodosComandos manipuladorMetodosComando;
+	private VerificadorListaMetodos verificadorListasMetodos;
 
 	public ObtentorDeComandoPeloNome() {
 		this.manipuladorMetodosComando = new ManipuladorMetodosComandos();
+		this.verificadorListasMetodos = new VerificadorListaMetodos();
 	}
 
-	public List<Method> getMetodosAnotadosComParametroNomeCorrespondente(String nomeComando, Class<?> classeControladoraAtual)
-			throws ControladorException, ComandoInvalidoException {
+	public List<Method> getMetodosAnotadosComParametroNomeCorrespondente(String nomeComando,
+			Class<?> classeControladoraAtual) throws BlackStreenException {
 		ManipuladorMetodosDaClasse manipuladorMetodos = new ManipuladorMetodosDaClasse(classeControladoraAtual);
 		List<Method> metodosControlador = Arrays.asList(classeControladoraAtual.getDeclaredMethods());
-		if (metodosControlador.size() == 0) {
-			throw new ControladorException(
-					"O controlador atual + [" + classeControladoraAtual + "] não possui nenhum método.");
-		}
-		List<Method> metodosControladorAnotados = manipuladorMetodos.getMetodosAnotados(Comando.class);
-		if (metodosControladorAnotados == null) {
-			throw new ControladorException("O controlador atual + [" + classeControladoraAtual
-					+ "] não possui nenhum método anotado com @Comando");
-		}
-		metodosControlador = this.manipuladorMetodosComando.getMetodosAnotadosPorNome(metodosControladorAnotados,
-				nomeComando);
-		if (metodosControlador.isEmpty()) {
-			throw new ComandoInvalidoException("A classe controladora atual " + classeControladoraAtual
-					+ "] não possui nenhum comando de nome " + nomeComando);
-		}
+		this.verificarSeExisteMetodosNoControlador(metodosControlador, classeControladoraAtual);
+		metodosControlador = manipuladorMetodos.getMetodosAnotados(Comando.class);
+		this.verificarSeListaDeMetodosAnotadosValeNull(metodosControlador, classeControladoraAtual);
+		metodosControlador = this.manipuladorMetodosComando.getMetodosAnotadosPorNome(metodosControlador, nomeComando);
+		this.verificarSeListaDeMetodosSelecionadosEstaVazia(metodosControlador, classeControladoraAtual, nomeComando);
 		return metodosControlador;
+	}
+
+	private void verificarSeExisteMetodosNoControlador(List<Method> metodos, Class<?> controlador)
+			throws BlackStreenException {
+		this.verificadorListasMetodos.lancarErroControladorSeEstiverVazia(metodos,
+				"O controlador atual + [" + controlador + "] não possui nenhum método.");
+	}
+
+	private void verificarSeListaDeMetodosAnotadosValeNull(List<Method> metodos, Class<?> controlador)
+			throws BlackStreenException {
+		this.verificadorListasMetodos.lancarErroControladorSeValerNull(metodos,
+				"O controlador atual + [" + controlador + "] não possui nenhum método anotado com @Comando");
+	}
+
+	private void verificarSeListaDeMetodosSelecionadosEstaVazia(List<Method> metodos, Class<?> controlador,
+			String nomeComando) throws BlackStreenException {
+		this.verificadorListasMetodos.lancarErroControladorSeEstiverVazia(metodos,
+				"A classe controladora atual " + controlador + "] não possui nenhum comando de nome " + nomeComando);
 	}
 
 }

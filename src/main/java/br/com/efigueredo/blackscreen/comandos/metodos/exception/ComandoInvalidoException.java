@@ -1,6 +1,8 @@
 package br.com.efigueredo.blackscreen.comandos.metodos.exception;
 
-public class ComandoInvalidoException extends Exception {
+import br.com.efigueredo.blackscreen.sistema.exception.BlackStreenException;
+
+public class ComandoInvalidoException extends BlackStreenException {
 
 	private static final long serialVersionUID = 1L;
 	
