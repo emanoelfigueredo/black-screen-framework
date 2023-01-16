@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @author Emanoel
  * @since 1.0.0
  */
-public class ManipuladorMetodos {
+public class ManipuladorMetodosDaClasse {
 
 	/**
 	 * Lista com os métodos públicos, privados, e herdados.
@@ -31,7 +31,7 @@ public class ManipuladorMetodos {
 	 * 
 	 * @param classe Objeto {@linkplain Class} que terá seus métodos manipulados.
 	 */
-	public ManipuladorMetodos(Class<?> classe) {
+	public ManipuladorMetodosDaClasse(Class<?> classe) {
 		this.metodos = new ArrayList<Method>();
 		this.setupMetodos(Arrays.asList(classe.getMethods()));
 		this.setupMetodos(Arrays.asList(classe.getDeclaredMethods()));
@@ -161,5 +161,7 @@ public class ManipuladorMetodos {
 		}
 		return recurso.get();
 	}
+	
+	
 
 }
