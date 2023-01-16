@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ComandoInvalidoException;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosParametrosValores;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosParametrosValoresIncorretosParametrosNaoAnotados;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValores;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValoresIncorretos2ListasValores;
