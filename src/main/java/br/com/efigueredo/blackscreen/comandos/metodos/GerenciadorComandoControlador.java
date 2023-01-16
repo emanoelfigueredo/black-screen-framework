@@ -1,12 +1,8 @@
 package br.com.efigueredo.blackscreen.comandos.metodos;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import br.com.efigueredo.blackscreen.anotacoes.Comando;
@@ -48,6 +44,28 @@ public class GerenciadorComandoControlador {
 					(ExpressaoUsuarioParametrosValores) expressaoUsuario);
 		}
 	}
+	
+	List<Method> getMetodosAnotadosComParametroNomeCorrespondente(String nomeComando, Class<?> classeControladoraAtual)
+			throws ControladorException, ComandoInvalidoException {
+		ManipuladorMetodosDaClasse manipuladorMetodos = new ManipuladorMetodosDaClasse(classeControladoraAtual);
+		List<Method> metodosControlador = Arrays.asList(classeControladoraAtual.getDeclaredMethods());
+		if (metodosControlador.size() == 0) {
+			throw new ControladorException(
+					"O controlador atual + [" + classeControladoraAtual + "] não possui nenhum método.");
+		}
+		List<Method> metodosControladorAnotados = manipuladorMetodos.getMetodosAnotados(Comando.class);
+		if (metodosControladorAnotados == null) {
+			throw new ControladorException("O controlador atual + [" + classeControladoraAtual
+					+ "] não possui nenhum método anotado com @Comando");
+		}
+		metodosControlador = this.manipuladorMetodosComando.getMetodosAnotadosPorNome(metodosControladorAnotados,
+				nomeComando);
+		if (metodosControlador.isEmpty()) {
+			throw new ComandoInvalidoException("A classe controladora atual " + classeControladoraAtual
+					+ "] não possui nenhum comando de nome " + nomeComando);
+		}
+		return metodosControlador;
+	}
 
 	private Method obterMetodoComandoSemParametrosDeComandoAdequado(Class<?> classeControladora, List<Method> metodos,
 			ExpressaoUsuarioValores expressao) throws ComandoInvalidoException {
@@ -78,99 +96,49 @@ public class GerenciadorComandoControlador {
 						+ "como único parâmetro. Só é possível que exista um comando com essa característica.");
 	}
 
-	// parametros
-
 	private Method obterComandoComParametrosCorrespondentes(List<Method> metodos,
 			ExpressaoUsuarioParametrosValores expressaoUsuario) throws ComandoInvalidoException {
 		List<Method> poolMetodos;
-		poolMetodos = this.manipuladorMetodos.extrairMetodosOndeTodosOsParametrosEstaoAnotadosCom(Parametro.class,
-				metodos);
-		this.verificadorListas.lancarErroSeEstiverVazia(poolMetodos,
-				"Não existe comando com parâmetros na classe controladora.");
-		poolMetodos = this.manipuladorMetodos.extrairMetodosPelaQuantidadeDeParametros(poolMetodos,
-				expressaoUsuario.getParametrosValores().size());
+		poolMetodos = this.extrairMetodosComParametrosAnotadosECorretos(metodos);
+		poolMetodos = this.extrairMetodosComQuantidadeDeParametrosCorrespondentes(poolMetodos, expressaoUsuario);
+		poolMetodos = this.extrairMetodosComNomesDeParametosCorrespondentes(poolMetodos, expressaoUsuario);
+		poolMetodos = this.extrairMetodosPelasClassesDeSeusParametros(poolMetodos, expressaoUsuario);
+		return poolMetodos.get(0);
+	}
+
+	private List<Method> extrairMetodosPelasClassesDeSeusParametros(List<Method> metodos,
+			ExpressaoUsuarioParametrosValores expressaoUsuario) throws ComandoInvalidoException {
+		metodos = this.manipuladorMetodosComando
+				.extrairMetodosFiltradosPelaCapacidadeDeValoresParaSeremInjetados(metodos, expressaoUsuario);
+		this.verificadorListas.lancarErroSeEstiverVazia(metodos,
+				"Os únicos comandos que possuem os parâmetros correpondetes não podem receber a quantidade de valores inserida.\nMétodos: "
+						+ metodos);
+		this.verificadorListas.lancarErroSeHouverMaisDeUmValor(metodos, "Comando iguais:\n" + metodos);
+		return metodos;
+	}
+
+	private List<Method> extrairMetodosComNomesDeParametosCorrespondentes(List<Method> metodos,
+			ExpressaoUsuarioParametrosValores expressaoUsuario) throws ComandoInvalidoException {
 		Set<String> nomesParametros = expressaoUsuario.getParametrosValores().keySet();
-		poolMetodos = this.manipuladorMetodosComando
-				.extrairMetodosOndeSeusNomesDeParametrosCorrespondemAListaDeNomes(nomesParametros, poolMetodos);
-		this.verificadorListas.lancarErroSeEstiverVazia(poolMetodos,
+		metodos = this.manipuladorMetodosComando
+				.extrairMetodosOndeSeusNomesDeParametrosCorrespondemAListaDeNomes(nomesParametros, metodos);
+		this.verificadorListas.lancarErroSeEstiverVazia(metodos,
 				"Os comandos correspondentes não possuem os parâmetros inseridos.\nParâmetros: " + nomesParametros);
-
-
-		// Valores que nao sao unicos devem ir para parametros que recebam listas
-		List<Method> metodosFinais = obterMetodosFiltradosPelaCapacidadeDeValoresParaSeremInjetados(poolMetodos,
-				expressaoUsuario);
-		if (metodosFinais.size() == 0) {
-			throw new ComandoInvalidoException(
-					"Os únicos comandos que possuem os parâmetros correpondetes não podem receber a quantidade de valores inserida.\nMétodos: "
-							+ poolMetodos);
-		}
-
-		if (metodosFinais.size() > 1) {
-			throw new ComandoInvalidoException("Comando iguais:\n" + poolMetodos);
-		}
-		return metodosFinais.get(0);
+		return metodos;
 	}
 
-	private static List<Method> obterMetodosFiltradosPelaCapacidadeDeValoresParaSeremInjetados(List<Method> metodos,
+	private List<Method> extrairMetodosComQuantidadeDeParametrosCorrespondentes(List<Method> metodos,
 			ExpressaoUsuarioParametrosValores expressaoUsuario) {
-
-		// metodos com nomes de parametros correpondentes, mesma quantidade, so falta
-		// definir se o método pode aceitar varios valores
-
-		Map<String, Class<?>> mapaParametroClasseNecessaria = new HashMap<String, Class<?>>();
-
-		Map<String, List<String>> parametrosValores = expressaoUsuario.getParametrosValores();
-		List<String> parametros = parametrosValores.keySet().stream().toList();
-		parametros.forEach(parametro -> {
-			List<String> valoresDoParametro = parametrosValores.get(parametro);
-			if (valoresDoParametro.size() == 1) {
-				mapaParametroClasseNecessaria.put(parametro, String.class);
-			} else {
-				mapaParametroClasseNecessaria.put(parametro, List.class);
-			}
-		});
-
-		List<Method> metodosSelecionados = new ArrayList<Method>();
-		for (Method metodo : metodos) {
-			Parameter[] parametrosDoMetodo = metodo.getParameters();
-			for (int i = 0; i < parametrosDoMetodo.length; i++) {
-				Parameter parametro = parametrosDoMetodo[i];
-				String nomeParametroMetodo = parametro.getAnnotation(Parametro.class).value();
-				Class<?> classeQueOParametroDoMetodoDeveReceber = mapaParametroClasseNecessaria
-						.get(nomeParametroMetodo);
-				boolean parametroRecebeTipoCorreto = parametro.getType().equals(classeQueOParametroDoMetodoDeveReceber);
-				if (parametroRecebeTipoCorreto) {
-					if (i == parametrosDoMetodo.length - 1) {
-						metodosSelecionados.add(metodo);
-					}
-					continue;
-				}
-				break;
-			}
-		}
-		return metodosSelecionados;
+		return this.manipuladorMetodos.extrairMetodosPelaQuantidadeDeParametros(metodos,
+				expressaoUsuario.getParametrosValores().size());
 	}
 
-	List<Method> getMetodosAnotadosComParametroNomeCorrespondente(String nomeComando, Class<?> classeControladoraAtual)
-			throws ControladorException, ComandoInvalidoException {
-		ManipuladorMetodosDaClasse manipuladorMetodos = new ManipuladorMetodosDaClasse(classeControladoraAtual);
-		List<Method> metodosControlador = Arrays.asList(classeControladoraAtual.getDeclaredMethods());
-		if (metodosControlador.size() == 0) {
-			throw new ControladorException(
-					"O controlador atual + [" + classeControladoraAtual + "] não possui nenhum método.");
-		}
-		List<Method> metodosControladorAnotados = manipuladorMetodos.getMetodosAnotados(Comando.class);
-		if (metodosControladorAnotados == null) {
-			throw new ControladorException("O controlador atual + [" + classeControladoraAtual
-					+ "] não possui nenhum método anotado com @Comando");
-		}
-		metodosControlador = this.manipuladorMetodosComando.getMetodosAnotadosPorNome(metodosControladorAnotados,
-				nomeComando);
-		if (metodosControlador.isEmpty()) {
-			throw new ComandoInvalidoException("A classe controladora atual " + classeControladoraAtual
-					+ "] não possui nenhum comando de nome " + nomeComando);
-		}
-		return metodosControlador;
+	private List<Method> extrairMetodosComParametrosAnotadosECorretos(List<Method> metodos)
+			throws ComandoInvalidoException {
+		metodos = this.manipuladorMetodos.extrairMetodosOndeTodosOsParametrosEstaoAnotadosCom(Parametro.class, metodos);
+		this.verificadorListas.lancarErroSeEstiverVazia(metodos,
+				"Não existe comando com parâmetros na classe controladora.");
+		return metodos;
 	}
 
 }
