@@ -1,1 +1,2 @@
 TODO: verificar se o parametro ja existe na manipulacao da expressao.
+TODO: no replace do comando, fazer apenas no primeiro

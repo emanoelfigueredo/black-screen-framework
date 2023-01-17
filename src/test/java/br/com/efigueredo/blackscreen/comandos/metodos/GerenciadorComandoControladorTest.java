@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import br.com.efigueredo.blackscreen.comandos.metodos.exception.ComandoInvalidoException;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosParametrosValores;
+import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosParametrosValores2;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosParametrosValoresIncorretosParametrosNaoAnotados;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValores;
 import br.com.efigueredo.blackscreen.comandos.metodos.prototipos.PrototipoControladorComandosSoValoresIncorretos2ListasValores;
@@ -168,6 +169,36 @@ class GerenciadorComandoControladorTest {
 		Method metodoEncontrado4 = this.gerenciador.getMetodoComando(expressao4,
 				PrototipoControladorComandosParametrosValores.class);
 		assertEquals(metodoEsperado4, metodoEncontrado4);
+
+		// Metodo com parametros correspondentes a quantidade de valores nao encontrado
+		// devia procurar o método que aceita uma lista de valores em todos os atributos
+		// com a mesma quantidade de atributos
+		Map<String, List<String>> parametrosValores5 = new HashMap<>();
+		parametrosValores5.put("param1", Arrays.asList("valor1"));
+		parametrosValores5.put("param2", Arrays.asList("valor1"));
+		ExpressaoUsuarioParametrosValores expressao5 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores5);
+		Method metodoEsperado5 = PrototipoControladorComandosParametrosValores2.class.getMethod("metodo1", List.class,
+				List.class);
+		Method metodoEncontrado5 = this.gerenciador.getMetodoComando(expressao5,
+				PrototipoControladorComandosParametrosValores2.class);
+		assertEquals(metodoEsperado5, metodoEncontrado5);
+		
+		// Metodo com parametros correspondentes a quantidade de valores nao encontrado
+		// devia procurar o método que aceita uma lista de valores em todos os atributos
+		// com a mesma quantidade de atributos
+		Map<String, List<String>> parametrosValores6 = new HashMap<>();
+		parametrosValores6.put("param1", Arrays.asList("valor1", "valor2"));
+		parametrosValores6.put("param2", Arrays.asList("valor1"));
+		ExpressaoUsuarioParametrosValores expressao6 = new ExpressaoUsuarioParametrosValores("adicionar",
+				parametrosValores6);
+		Method metodoEsperado6 = PrototipoControladorComandosParametrosValores2.class.getMethod("metodo1", List.class,
+				List.class);
+		Method metodoEncontrado6 = this.gerenciador.getMetodoComando(expressao6,
+				PrototipoControladorComandosParametrosValores2.class);
+		assertEquals(metodoEsperado6, metodoEncontrado6);
+		
+		
 	}
 
 	@Test

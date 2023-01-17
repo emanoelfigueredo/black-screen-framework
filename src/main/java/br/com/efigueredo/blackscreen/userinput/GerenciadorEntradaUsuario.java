@@ -89,7 +89,7 @@ public class GerenciadorEntradaUsuario {
 	 */
 	public ExpressaoUsuario manipularExpressao(String expressao) throws ExpressaoInvalidaException {
 		String comando = this.manipulador.extrairComando(expressao);
-		String expressaoSemComando = expressao.replace(comando, "").strip();
+		String expressaoSemComando = expressao.substring(comando.length(), expressao.length()).strip();
 		if(expressaoSemComando.startsWith("--")) {
 			Map<String, List<String>> parametrosValores = this.manipulador.extrairParametrosEValores(expressaoSemComando);
 			return new ExpressaoUsuarioParametrosValores(comando, parametrosValores);

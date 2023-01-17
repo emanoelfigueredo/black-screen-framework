@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import br.com.efigueredo.blackscreen.anotacoes.Comando;
+import br.com.efigueredo.blackscreen.anotacoes.Parametro;
 import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioParametrosValores;
 
 /**
@@ -28,21 +29,33 @@ public class ManipuladorMetodosComandos {
 
 	public List<Method> extrairMetodosOndeSeusNomesDeParametrosCorrespondemAListaDeNomes(Set<String> set,
 			List<Method> metodos) {
-		return metodos.stream().filter(
-				metodo -> this.manipuladorParametros.nomesDeParametrosCorrespondemAListaDeNomesInserida(set,
-						Arrays.asList(metodo.getParameters())))
+		return metodos
+				.stream().filter(metodo -> this.manipuladorParametros
+						.nomesDeParametrosCorrespondemAListaDeNomesInserida(set, Arrays.asList(metodo.getParameters())))
 				.toList();
 	}
-	
+
 	public List<Method> extrairMetodosFiltradosPelaCapacidadeDeValoresParaSeremInjetados(List<Method> metodos,
 			ExpressaoUsuarioParametrosValores expressaoUsuario) {
 		Map<String, Class<?>> mapaRelacaoParametroClasse = this.manipuladorParametros
 				.obterMapaDeRelacaoParametroEClasseInjecao(expressaoUsuario.getParametrosValores());
-		return metodos.stream()
+
+		List<Method> resultadoPeloMapaDeClasseEsperada = metodos.stream()
 				.filter(metodo -> Stream.of(metodo.getParameters()).allMatch(parametro -> this.manipuladorParametros
 						.parametroCorrespondeAoTipoNecessarioParaInjecao(parametro, mapaRelacaoParametroClasse)))
 				.toList();
-	}
+		if (resultadoPeloMapaDeClasseEsperada.isEmpty()) {
+			// obter metodo que so aceita lista se existir
 
+			List<Method> metodosQueSoAceitamLista = metodos.stream().filter(metodo -> Stream.of(metodo.getParameters())
+					.allMatch(parametro -> parametro.getType().equals(List.class))).toList();
+			
+			
+			System.out.println(metodosQueSoAceitamLista);
+			return metodosQueSoAceitamLista;
+
+		}
+		return resultadoPeloMapaDeClasseEsperada;
+	}
 
 }

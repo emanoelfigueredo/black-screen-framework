@@ -17,6 +17,7 @@ import br.com.efigueredo.blackscreen.sistema.exception.ControladorAtualInexisten
 import br.com.efigueredo.blackscreen.userinput.GerenciadorEntradaUsuario;
 import br.com.efigueredo.blackscreen.userinput.exception.ExpressaoInvalidaException;
 import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuario;
+import br.com.efigueredo.blackscreen.userinput.expressao.ExpressaoUsuarioParametrosValores;
 import br.com.efigueredo.container.ContainerIoc;
 import br.com.efigueredo.container.exception.ContainerIocException;
 

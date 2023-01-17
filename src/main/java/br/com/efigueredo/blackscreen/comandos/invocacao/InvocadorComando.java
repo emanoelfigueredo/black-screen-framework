@@ -58,9 +58,10 @@ public class InvocadorComando {
 		if(expressao instanceof ExpressaoUsuarioValores) {
 			ExpressaoUsuarioValores expressaoValores = (ExpressaoUsuarioValores) expressao;
 			this.invocadorMetodo.invocarComandoSemParametrosDeComando(objetoControlador, metodoComando, expressaoValores.getValores());
+		} else {
+			ExpressaoUsuarioParametrosValores expressaoParametrosValores = (ExpressaoUsuarioParametrosValores) expressao;
+			this.invocadorMetodo.invocarComandoComParametrosDeComando(objetoControlador, metodoComando, expressaoParametrosValores.getParametrosValores());
 		}
-		ExpressaoUsuarioParametrosValores expressaoParametrosValores = (ExpressaoUsuarioParametrosValores) expressao;
-		this.invocadorMetodo.invocarComandoComParametrosDeComando(objetoControlador, metodoComando, expressaoParametrosValores.getParametrosValores());
 	}
 
 }

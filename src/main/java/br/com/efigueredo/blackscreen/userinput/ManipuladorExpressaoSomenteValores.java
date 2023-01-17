@@ -27,7 +27,10 @@ public class ManipuladorExpressaoSomenteValores {
 	}
 
 	private boolean proximoValorTemAspaEscapadaComArroba(String expressao) {
-		return expressao.substring(0, 2).contains("@\"");
+		if(expressao.length() > 1) {
+			return expressao.substring(0, 2).contains("@\"");
+		}
+		return false;
 	}
 
 	private boolean proximoValorTemAspaSemEscapeArroba(String expressao) {
@@ -65,7 +68,10 @@ public class ManipuladorExpressaoSomenteValores {
 	}
 
 	private boolean aspasMaisProximaEstaEscapadaComArroba(String expressao, int indexAspaMaisProxima) {
-		return expressao.substring(indexAspaMaisProxima - 1, indexAspaMaisProxima).equals("@");
+		if(indexAspaMaisProxima != 0) {
+			return expressao.substring(indexAspaMaisProxima - 1, indexAspaMaisProxima).equals("@");
+		}
+		return false;
 	}
 
 	private String extrairValoresComAspas(List<String> listaValores, String expressaoManipulacao) {

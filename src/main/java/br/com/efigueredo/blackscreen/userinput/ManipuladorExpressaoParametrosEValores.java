@@ -23,7 +23,6 @@ public class ManipuladorExpressaoParametrosEValores {
 		List<String> listaParametrosEValores = Arrays.asList(expressao.split("--"));
 		for (String parametroEValor : listaParametrosEValores) {
 			parametroEValor = parametroEValor.strip();
-			System.out.println(parametroEValor);
 			if (parametroEValor.length() == 0) {
 				continue;
 			}

@@ -19,5 +19,9 @@ public class InvocacaoComandoInterrompidaException extends Exception {
 	public InvocacaoComandoInterrompidaException(String mensagem, Throwable causa) {
 		super(mensagem, causa);
 	}
+	
+	public InvocacaoComandoInterrompidaException(String mensagem) {
+		super(mensagem);
+	}
 
 }
